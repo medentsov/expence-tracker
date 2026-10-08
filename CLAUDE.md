@@ -82,3 +82,10 @@ Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──�
 - **Единая валюта** — `RUB` по умолчанию; поддерживаются `RUB | USD | EUR` (`CurrencyCode` в `packages/shared`).
 - **CORS** в `main.ts` разрешает только `http://localhost:3000` — при развёртывании добавить домен фронта.
 - `tsconfig.base.json` в корне — общий strict-конфиг; воркспейсы его расширяют (web — bundler, api — commonjs/node).
+
+## Окружение и git
+
+- `node_modules/`, `.next/`, `dist/`, `pgdata/` — в `.gitignore` (не коммитятся). `pgdata/` создаёт Docker (владелец root) — ручками не трогать.
+- `package-lock.json` — коммитить (он не игнорируется).
+- `apps/api/.env` — локальный, создаётся из `apps/api/.env.example` и в git не попадает (`DATABASE_URL`, `PORT`). Внешние переменные окружения брать из него, а не зашивать в код.
+- Git-identity настроен локально (`user.name` = Alexander Medentsov). Сообщения коммитов завершать строкой `Co-Authored-By: Claude Code <noreply@anthropic.com>`.
