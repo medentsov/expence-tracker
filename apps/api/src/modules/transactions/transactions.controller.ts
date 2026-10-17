@@ -54,6 +54,8 @@ export class TransactionsController {
         query.dateTo,
         query.type,
         query.categoryId,
+        query.page,
+        query.limit,
       ),
     );
   }
