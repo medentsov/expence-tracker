@@ -1,19 +1,23 @@
 'use client';
 
+import type { TransactionsSummary } from '@tracker/shared';
 import { TrendingDown, TrendingUp, Wallet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { formatMoney } from '@/shared/lib/format';
-import { useSummary } from '../model/use-summary';
 
 const MONTH_NAMES = [
   'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
   'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
 ];
 
-export function SummaryCards() {
-  const { data, loading, error } = useSummary();
+interface SummaryCardsProps {
+  data: TransactionsSummary | null;
+  loading: boolean;
+  error: string | null;
+}
 
+export function SummaryCards({ data, loading, error }: SummaryCardsProps) {
   if (error) {
     return (
       <p className="text-sm text-muted-foreground">

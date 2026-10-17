@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { todayInputDate } from '@/shared/lib/date';
 
 // Схема формы создания транзакции (правила зеркалят CreateTransactionDto).
 // Сумма вводится строкой и проверяется на положительное число.
@@ -14,3 +15,14 @@ export const createTransactionSchema = z.object({
 });
 
 export type CreateTransactionFormValues = z.infer<typeof createTransactionSchema>;
+
+// Чистые значения формы: дата — сегодняшняя по локальному времени.
+export function createEmptyValues(): CreateTransactionFormValues {
+  return {
+    amount: '',
+    type: 'EXPENSE',
+    description: '',
+    date: todayInputDate(),
+    categoryId: '',
+  };
+}

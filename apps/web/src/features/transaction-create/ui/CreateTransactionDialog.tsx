@@ -34,6 +34,7 @@ import type { CreateTransactionFormValues } from '../model/schema';
 interface CreateTransactionDialogProps {
   form: UseFormReturn<CreateTransactionFormValues>;
   categories: Category[];
+  categoriesLoading: boolean;
   create: {
     isSubmitting: boolean;
     rootError: string | null;
@@ -43,7 +44,12 @@ interface CreateTransactionDialogProps {
   };
 }
 
-export function CreateTransactionDialog({ form, categories, create }: CreateTransactionDialogProps) {
+export function CreateTransactionDialog({
+  form,
+  categories,
+  categoriesLoading,
+  create,
+}: CreateTransactionDialogProps) {
   return (
     <Dialog open={create.open} onOpenChange={create.setOpen}>
       <DialogTrigger asChild>
@@ -123,7 +129,11 @@ export function CreateTransactionDialog({ form, categories, create }: CreateTran
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories.length === 0 ? (
+                      {categoriesLoading ? (
+                        <SelectItem value="__none__" disabled>
+                          Загрузка…
+                        </SelectItem>
+                      ) : categories.length === 0 ? (
                         <SelectItem value="__none__" disabled>
                           Нет категорий
                         </SelectItem>
@@ -178,7 +188,10 @@ export function CreateTransactionDialog({ form, categories, create }: CreateTran
               >
                 Отмена
               </Button>
-              <Button type="submit" disabled={create.isSubmitting}>
+              <Button
+                type="submit"
+                disabled={create.isSubmitting || categoriesLoading || categories.length === 0}
+              >
                 {create.isSubmitting ? 'Создаём…' : 'Сохранить'}
               </Button>
             </DialogFooter>

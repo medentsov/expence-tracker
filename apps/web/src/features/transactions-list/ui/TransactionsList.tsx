@@ -1,15 +1,30 @@
 'use client';
 
+import type { Paginated, Transaction } from '@tracker/shared';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { useTransactions } from '../model/use-transactions';
 import { TransactionItem } from './TransactionItem';
 
-export function TransactionsList() {
-  const { data, loading, error, page, totalPages, total, setPage } = useTransactions();
+interface TransactionsListProps {
+  data: Paginated<Transaction> | null;
+  loading: boolean;
+  error: string | null;
+  page: number;
+  totalPages: number;
+  total: number;
+  setPage: (page: number) => void;
+}
 
-  // Ошибка
+export function TransactionsList({
+  data,
+  loading,
+  error,
+  page,
+  totalPages,
+  total,
+  setPage,
+}: TransactionsListProps) {
   if (error) {
     return (
       <p className="text-sm text-muted-foreground">

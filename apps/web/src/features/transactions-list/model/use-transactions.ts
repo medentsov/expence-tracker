@@ -48,12 +48,20 @@ export function useTransactions(): UseTransactionsResult {
     fetch();
   }, [fetch]);
 
+  const total = data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  // Если данных стало меньше (удаление/фильтр) и текущая страница вышла за пределы —
+  // возвращаемся на последнюю существующую.
+  useEffect(() => {
+    if (data && data.items.length === 0 && page > totalPages) {
+      setPageState(totalPages);
+    }
+  }, [data, page, totalPages]);
+
   const setPage = useCallback((newPage: number) => {
     setPageState(newPage);
   }, []);
-
-  const total = data?.total ?? 0;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return { data, loading, error, page, totalPages, total, setPage, refetch: fetch };
 }

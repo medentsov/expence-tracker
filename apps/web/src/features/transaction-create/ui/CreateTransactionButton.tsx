@@ -2,24 +2,26 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { createTransactionSchema, type CreateTransactionFormValues } from '../model/schema';
-import { useCategories } from '../model/use-categories';
+import { createEmptyValues, createTransactionSchema, type CreateTransactionFormValues } from '../model/schema';
 import { useCreateTransaction } from '../model/use-create-transaction';
+import { useCategories } from '../model/use-categories';
 import { CreateTransactionDialog } from './CreateTransactionDialog';
 
 export function CreateTransactionButton({ onCreated }: { onCreated?: () => void }) {
-  const { categories } = useCategories();
   const form = useForm<CreateTransactionFormValues>({
     resolver: zodResolver(createTransactionSchema),
-    defaultValues: {
-      amount: '',
-      type: 'EXPENSE',
-      description: '',
-      date: new Date().toISOString().slice(0, 10),
-      categoryId: '',
-    },
+    defaultValues: createEmptyValues(),
   });
   const create = useCreateTransaction(form, onCreated);
+  // Категории грузим лениво — только когда диалог открыт.
+  const { categories, loading } = useCategories(create.open);
 
-  return <CreateTransactionDialog form={form} categories={categories} create={create} />;
+  return (
+    <CreateTransactionDialog
+      form={form}
+      categories={categories}
+      categoriesLoading={loading}
+      create={create}
+    />
+  );
 }

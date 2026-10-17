@@ -1,7 +1,7 @@
 'use client';
 
 import type { Category } from '@tracker/shared';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { listCategories } from '@/entities/category';
 import { getToken } from '@/entities/session';
 import { ApiError } from '@/shared/api/client';
@@ -10,19 +10,22 @@ interface UseCategoriesResult {
   categories: Category[];
   loading: boolean;
   error: string | null;
+  loaded: boolean;
   reload: () => void;
 }
 
-export function useCategories(): UseCategoriesResult {
+// Категории грузятся лениво — только когда передан enabled (например, диалог открыт).
+export function useCategories(enabled: boolean): UseCategoriesResult {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
-  const reload = () => {
+  const reload = useCallback(() => {
     const token = getToken();
     if (!token) {
-      setLoading(false);
       setError('Нет токена');
+      setLoaded(true);
       return;
     }
     setLoading(true);
@@ -32,13 +35,17 @@ export function useCategories(): UseCategoriesResult {
       .catch((err: unknown) => {
         setError(err instanceof ApiError ? err.message : 'Не удалось загрузить категории');
       })
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    reload();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      .finally(() => {
+        setLoading(false);
+        setLoaded(true);
+      });
   }, []);
 
-  return { categories, loading, error, reload };
+  useEffect(() => {
+    if (enabled && !loaded && !loading) {
+      reload();
+    }
+  }, [enabled, loaded, loading, reload]);
+
+  return { categories, loading, error, loaded, reload };
 }

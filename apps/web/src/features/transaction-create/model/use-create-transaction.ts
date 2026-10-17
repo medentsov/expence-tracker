@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { getToken } from '@/entities/session';
 import { createTransaction } from '@/entities/transaction';
 import { ApiError } from '@/shared/api/client';
-import type { CreateTransactionFormValues } from './schema';
+import { createEmptyValues, type CreateTransactionFormValues } from './schema';
 
 interface UseCreateTransactionResult {
   isSubmitting: boolean;
@@ -23,6 +23,19 @@ export function useCreateTransaction(
   const [rootError, setRootError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
+  // Закрытие/открытие: при открытии сбрасываем прошлые ошибки,
+  // при закрытии — форму к чистому состоянию.
+  const handleOpenChange = useCallback(
+    (next: boolean) => {
+      setOpen(next);
+      setRootError(null);
+      if (!next) {
+        form.reset(createEmptyValues());
+      }
+    },
+    [form],
+  );
+
   async function onSubmit(values: CreateTransactionFormValues): Promise<void> {
     const token = getToken();
     if (!token) {
@@ -39,8 +52,7 @@ export function useCreateTransaction(
         date: values.date,
         categoryId: values.categoryId,
       });
-      form.reset();
-      setOpen(false);
+      handleOpenChange(false);
       onCreated?.();
     } catch (error) {
       setRootError(error instanceof ApiError ? error.message : 'Не удалось создать транзакцию');
@@ -49,5 +61,5 @@ export function useCreateTransaction(
     }
   }
 
-  return { isSubmitting, rootError, open, setOpen, onSubmit };
+  return { isSubmitting, rootError, open, setOpen: handleOpenChange, onSubmit };
 }
