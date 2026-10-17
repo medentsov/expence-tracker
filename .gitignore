@@ -24,3 +24,6 @@ npm-debug.log*
 
 # TypeScript
 *.tsbuildinfo
+
+# Turborepo: managed-блок с agent guidance, создаётся автоматически
+AGENTS.md

@@ -7,6 +7,12 @@
     "allowJs": true,
     "noEmit": true,
     "incremental": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@tracker/shared": ["../../packages/shared/src"]
+    },
     "plugins": [
       {
         "name": "next"

@@ -3,6 +3,7 @@ export interface Category {
   id: string;
   name: string;
   icon?: string | null;
+  color?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -11,4 +12,5 @@ export interface Category {
 export interface CategoryInput {
   name: string;
   icon?: string;
+  color?: string;
 }

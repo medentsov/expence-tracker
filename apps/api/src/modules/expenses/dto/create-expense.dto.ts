@@ -4,7 +4,7 @@ import { IsDateString, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from 
 export class CreateExpenseDto {
   @ApiProperty({ example: 1250.5, description: 'Сумма расхода' })
   @IsNumber()
-  amount: number;
+  amount!: number;
 
   @ApiPropertyOptional({ example: 'RUB', default: 'RUB', description: 'Валюта' })
   @IsOptional()
@@ -25,5 +25,5 @@ export class CreateExpenseDto {
 
   @ApiProperty({ description: 'ID категории' })
   @IsUUID()
-  categoryId: string;
+  categoryId!: string;
 }

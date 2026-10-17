@@ -54,26 +54,34 @@ npx prisma studio       # UI для просмотра данных
 ```
 Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──►  PostgreSQL (Docker)
         │                              │
-        └────── @tracker/shared ──────┘        (общие типы Category/Expense/CurrencyCode)
+        └────── @tracker/shared ──────┘        (общие типы Category/Expense/CurrencyCode/User)
 ```
 
 ### Бэкенд (`apps/api`)
 
 - Вход: `src/main.ts` — bootstrap; глобальный `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`), Swagger на `/api/docs`, CORS для `localhost:3000`.
 - `src/prisma/` — `PrismaModule` (`@Global`) и `PrismaService` (наследник `PrismaClient`; `$connect` в `onModuleInit`, `$disconnect` в `onModuleDestroy`). Подключается свободно, без явного импорта.
-- Бизнес-логика живёт в `src/modules/<feature>/` — каждый модуль состоит из `*.module.ts`, `*.controller.ts`, `*.service.ts` и `dto/`. Три фичи: `categories`, `expenses`, `auth`.
-- `auth` — **заглушка** (JWT-авторизация ещё не реализована).
-- Prisma-схема: `prisma/schema.prisma` — модели `User`, `Category`, `Expense`, поля с `@db.Decimal(12, 2)`, UID-ключи, связи с `onDelete`.
+- **CQRS**: `CqrsModule.forRoot()` в `AppModule` регистрирует шины (`CommandBus`/`QueryBus`/`EventBus`) глобально. Модули взаимодействуют **только через шины**, без прямых импортов друг друга. Контроллеры транслируют DTO в команды/запросы; хендлеры (`@CommandHandler`/`@QueryHandler`/`@EventsHandler`) живут в модуле-владельце данных и находятся глобально через `ExplorerService`. Каждый feature-модуль: `*.module.ts`, `*.controller.ts`, `commands/`, `queries/`, `events/`, `dto/`. Фичи: `categories`, `expenses`, `users`, `auth`.
+- `auth` — JWT-авторизация: `POST /auth/register`, `POST /auth/login` (публичные, `@Public()`), `GET /auth/me` (данные из JWT). Глобальный `JwtAuthGuard` (`APP_GUARD` в `AuthModule`) защищает все роуты; секрет и срок жизни токена — из `JWT_SECRET`/`JWT_EXPIRES_IN` (`.env`, `JwtModule.registerAsync` с fail-fast). Пароли — `bcryptjs` (cost 10). Подпись токена — `TokenService`; `RegisterHandler` создаёт пользователя через `CreateUserCommand` (шина), `LoginHandler` читает учётные данные через `GetUserByEmailQuery`.
+- `users` — владелец данных о пользователях: `UserRepository` (Prisma-доступ) + `UsersService` (`toPublicUser` вычищает `passwordHash`). Наружу ничего не экспортирует — только хендлеры через шину. Публикует `UserRegisteredEvent` при регистрации.
+- `categories`/`expenses` — хендлеры работают с `PrismaService` напрямую; `userId` приходит из `@CurrentUser()` через команду/запрос, выборки фильтруются по `userId` (чужая запись → 404).
+- Prisma-схема: `prisma/schema.prisma` — модели `User` (с `passwordHash`), `Category`, `Expense`, поля с `@db.Decimal(12, 2)`, UID-ключи, связи с `onDelete`.
 
 ### Фронтенд (`apps/web`)
 
-- App Router: корневой `app/layout.tsx` + `app/page.tsx`. Страницы — по папкам в `app/`.
-- `components/` и `lib/` пока пусты (README-заглушки): сюда будут добавляться UI-компоненты и API-клиент.
-- `next.config.ts` подключает `transpilePackages: ['@tracker/shared']` — чтобы общие типы резолвились в браузере.
+- App Router поверх `src/app/` (Next сам находит `src/`); страницы — в групповых layout'ах `(auth)` (публичные) и `(protected)` (приватные).
+- **Feature-Sliced Design (FSD)** — слои в `src/`: `app` (роутинг/layouts/guards) → `views` (страницы) → `features` (действия) → `entities` (домен) → `shared` (переиспользуемый код). Правило импортов — **только «вниз»** (вышестоящий слой видит нижестоящие), кросс-импорты внутри слоя запрещены. Каждый слайс отдаёт публичный API через `index.ts`.
+  - Слой pages FSD назван **`views`**, чтобы не конфликтовать с Pages Router Next.js.
+  - `shared` — инфраструктура: `api` (типизированный `fetch` — `apiFetch`, `ApiError`), `config` (env), `lib` (утилиты, `cn`), `ui` (shadcn-компоненты).
+  - `entities/session` — JWT-сессия: контекст `SessionProvider`/`useSession` поверх `localStorage`; токен под ключом `tracker.accessToken`, полный профиль кэшируется в `tracker.user`.
+  - `features/auth-login`, `features/auth-register` — формы входа/регистрации (`react-hook-form` + `zod`).
+- Алиас `@/*` → `apps/web/src/*` (в `apps/web/tsconfig.json` `paths`). `@tracker/shared` резолвится через `next.config.ts` (`transpilePackages`).
+- **UI** — shadcn/ui + Tailwind CSS v4 (без `tailwind.config.js` — тема в `globals.css` через `@theme`). Компоненты добавляются `npx shadcn@latest add <name>` из `apps/web` и кладутся в `src/shared/ui` (aliases в `components.json`).
+- **Сессия/API**: токен передаётся заголовком `Authorization: Bearer …`; `GET /auth/me` возвращает **JWT-payload** (`{sub,email,name}`), а не `User` — полный профиль берётся из ответов login/register. Базовый URL API — `NEXT_PUBLIC_API_URL` (default `http://localhost:3001`), файл `apps/web/.env.example`.
 
 ### Общий код (`packages/shared`)
 
-- Точка входа `src/index.ts`; типы в `src/types/` (`category.ts`, `expense.ts`, `currency.ts`).
+- Точка входа `src/index.ts`; типы в `src/types/` (`category.ts`, `expense.ts`, `currency.ts`, `user.ts`).
 - Импортируется как `@tracker/shared`. Типы — интерфейсы, зеркалящие ответы API. Держать в синхронизации с DTO бэкенда (`apps/api/src/modules/*/dto`).
 
 ## Важные соглашения
@@ -88,4 +96,5 @@ Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──�
 - `node_modules/`, `.next/`, `dist/`, `pgdata/` — в `.gitignore` (не коммитятся). `pgdata/` создаёт Docker (владелец root) — ручками не трогать.
 - `package-lock.json` — коммитить (он не игнорируется).
 - `apps/api/.env` — локальный, создаётся из `apps/api/.env.example` и в git не попадает (`DATABASE_URL`, `PORT`). Внешние переменные окружения брать из него, а не зашивать в код.
-- Git-identity настроен локально (`user.name` = Alexander Medentsov). Сообщения коммитов завершать строкой `Co-Authored-By: Claude Code <noreply@anthropic.com>`.
+- Git-identity настроен локально (`user.name` = Alexander Medentsov).
+- **Коммиты** — формат Conventional Commits: `<type>: <описание>` (типы `feat`, `fix`, `chore`, `docs`, `refactor`, `test`; опционально scope — `feat(api)`, `feat(web)`). Сообщение — на русском. Каждое сообщение завершать строкой `Co-Authored-By: Claude Code <noreply@anthropic.com>`. Коммитить **только по явному запросу** пользователя, не автоматически по завершении задачи.

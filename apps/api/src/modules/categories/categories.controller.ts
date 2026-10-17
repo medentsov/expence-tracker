@@ -1,36 +1,55 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { CategoriesService } from './categories.service';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/interfaces/jwt-payload.interface';
+import { CreateCategoryCommand } from './commands/create-category.command';
+import { DeleteCategoryCommand } from './commands/delete-category.command';
+import { UpdateCategoryCommand } from './commands/update-category.command';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { GetCategoriesQuery } from './queries/get-categories.query';
+import { GetCategoryQuery } from './queries/get-category.query';
 
 @ApiTags('categories')
+@ApiBearerAuth()
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post()
-  create(@Body() dto: CreateCategoryDto) {
-    return this.categoriesService.create(dto);
+  create(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateCategoryDto) {
+    return this.commandBus.execute(
+      new CreateCategoryCommand(user.id, dto.name, dto.icon, dto.color),
+    );
   }
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  findAll(@CurrentUser() user: AuthenticatedUser) {
+    return this.queryBus.execute(new GetCategoriesQuery(user.id));
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.findOne(id);
+  findOne(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUUIDPipe) id: string) {
+    return this.queryBus.execute(new GetCategoryQuery(user.id, id));
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateCategoryDto) {
-    return this.categoriesService.update(id, dto);
+  update(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateCategoryDto,
+  ) {
+    return this.commandBus.execute(
+      new UpdateCategoryCommand(user.id, id, dto.name, dto.icon, dto.color),
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.remove(id);
+  remove(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUUIDPipe) id: string) {
+    return this.commandBus.execute(new DeleteCategoryCommand(user.id, id));
   }
 }
