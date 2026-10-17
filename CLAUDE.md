@@ -75,11 +75,13 @@ Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──�
   - Слой pages FSD назван **`views`**, чтобы не конфликтовать с Pages Router Next.js.
   - `shared` — инфраструктура: `api` (типизированный `fetch` — `apiFetch`, `ApiError`), `config` (env), `lib` (утилиты, `cn`), `ui` (shadcn-компоненты).
   - `entities/session` — JWT-сессия: контекст `SessionProvider`/`useSession` поверх `localStorage`; токен под ключом `tracker.accessToken`, полный профиль кэшируется в `tracker.user`.
-  - `entities/transaction` — доступ к API транзакций (`listTransactions` c `page`/`limit`, `getTransactionsSummary`); токен передаётся аргументом (слой `entities` не импортирует `session` внутри себя).
+  - `entities/transaction` — доступ к API транзакций (`listTransactions` c `page`/`limit`, `getTransactionsSummary`, `createTransaction`); токен передаётся аргументом (слой `entities` не импортирует `session` внутри себя).
+  - `entities/category` — `listCategories` (`GET /categories`); токен передаётся аргументом.
   - `features/auth-login`, `features/auth-register` — формы входа/регистрации (`react-hook-form` + `zod`).
   - `features/app-header` — общая шапка приватных страниц: меню (Главная/Транзакции/Категории), профиль из `useSession()` и выход. Рендерится в `app/(protected)/layout.tsx`.
   - `features/transactions-summary` — карточки сводки за текущий месяц (доходы/расходы/баланс).
   - `features/transactions-list` — список транзакций по 10 на страницу с кнопками «Назад/Вперёд».
+  - `features/transaction-create` — кнопка «Создать» + модалка формы новой транзакции (тип/сумма/категория/дата/описание); после создания обновляет список и сводку.
   - Форматирование (`formatMoney` в RUB, `formatDate`) — `shared/lib/format.ts`.
 - Алиас `@/*` → `apps/web/src/*` (в `apps/web/tsconfig.json` `paths`). `@tracker/shared` резолвится через `next.config.ts` (`transpilePackages`).
 - **UI** — shadcn/ui + Tailwind CSS v4 (без `tailwind.config.js` — тема в `globals.css` через `@theme`). Компоненты добавляются `npx shadcn@latest add <name>` из `apps/web` и кладутся в `src/shared/ui` (aliases в `components.json`).

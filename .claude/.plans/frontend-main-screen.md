@@ -47,15 +47,18 @@
 ### 4. Фронтенд — `entities`
 - [x] `entities/transaction/api/list-transactions.ts` (`page`/`limit`)
 - [x] `entities/transaction/api/get-summary.ts` (`month`/`year`)
-- [x] Публичный API `entities/transaction/index.ts`
+- [x] `entities/transaction/api/create-transaction.ts` (`POST /transactions`)
+- [x] `entities/category/api/list-categories.ts` (`GET /categories`)
+- [x] Публичный API `entities/transaction/index.ts`, `entities/category/index.ts`
 
 ### 5. Фронтенд — `features`
 - [x] `features/app-header` — меню (Главная/Транзакции/Категории), активный пункт через `usePathname`, профиль с именем и выходом
 - [x] `features/transactions-summary` — карточки «Доходы», «Расходы», «Баланс» за текущий месяц
 - [x] `features/transactions-list` — список по 10, скелетоны, пустое состояние, пагинация «Назад/Вперёд»
+- [x] `features/transaction-create` — зелёная кнопка «Создать» (справа от заголовка «Главная»), модалка с формой (тип/сумма/категория/дата/описание), после создания обновляет список и сводку
 
 ### 6. Фронтенд — `views` и `app`
-- [x] `views/dashboard` переписан: сводка + последние транзакции
+- [x] `views/dashboard` переписан: заголовок + кнопка «Создать», сводка + последние транзакции
 - [x] `views/transactions`, `views/categories` — заглушки
 - [x] `app/(protected)/layout.tsx` — общая шапка + контент `max-w-5xl`
 - [x] Роуты `/transactions`, `/categories`; `metadata` дашборда → «Главная»
@@ -66,6 +69,7 @@
 - [x] `npm run build` — успешно, роуты собраны
 - [x] E2E API: пользователь + категория + 12 транзакций → `page=1` вернул 10, `page=2` — 2, `total=12`
 - [x] `amount` числом, даты ISO; сводка `{3000, 4800, -1800}`
+- [x] Создание транзакции: `POST /transactions` → расход вырос 4800 → 5300
 - [x] Роуты `/dashboard`, `/transactions`, `/categories` отвечают 200
 - [ ] Визуальная проверка в браузере (в окружении нет браузера/playwright)
 
@@ -78,7 +82,7 @@
 
 ## Что осталось / следующие шаги
 
-- **Визуальная проверка**: `npm run dev` → войти → проверить шапку, сводку, листание страниц, выход.
+- **Визуальная проверка**: `npm run dev` → войти → проверить шапку, сводку, листание страниц, выход и модалку создания транзакции.
 - **Наполнение `/transactions`**: полный список с фильтрами (`dateFrom`/`dateTo`/`type`/`categoryId` уже поддерживаются API).
 - **Наполнение `/categories`**: CRUD категорий (бэкенд готов).
 - **PR**: по правилам GitHub Flow — мерж в `main` только через Pull Request (создать по запросу пользователя).
