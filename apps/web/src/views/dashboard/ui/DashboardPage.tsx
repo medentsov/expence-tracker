@@ -1,47 +1,43 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useSession } from '@/entities/session';
-import { Button } from '@/shared/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/card';
+import { useCallback } from 'react';
+import { SummaryCards, useSummary } from '@/features/transactions-summary';
+import { TransactionsList, useTransactions } from '@/features/transactions-list';
+import { CreateTransactionButton } from '@/features/transaction-create';
 
-// Защищённая страница профиля: данные текущего пользователя и кнопка выхода.
+// Главный экран: сводка за текущий месяц и последние транзакции с пагинацией.
 export function DashboardPage() {
-  const { user, signOut } = useSession();
-  const router = useRouter();
+  const summary = useSummary();
+  const transactions = useTransactions();
 
-  function handleSignOut(): void {
-    signOut();
-    router.replace('/login');
-  }
+  // После создания транзакции обновляем данные без перемонтирования компонентов.
+  const handleCreated = useCallback(() => {
+    summary.refetch();
+    transactions.refetch();
+  }, [summary.refetch, transactions.refetch]);
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Профиль</CardTitle>
-        <CardDescription>Вы вошли в трекер. Разделы расходов и категорий — в следующей итерации.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <dl className="text-sm">
-          <div className="flex justify-between border-b py-2">
-            <dt className="text-muted-foreground">Имя</dt>
-            <dd>{user?.name ?? '—'}</dd>
-          </div>
-          <div className="flex justify-between border-b py-2">
-            <dt className="text-muted-foreground">Email</dt>
-            <dd>{user?.email ?? '—'}</dd>
-          </div>
-        </dl>
-        <Button type="button" variant="outline" className="w-full" onClick={handleSignOut}>
-          Выйти
-        </Button>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-6">
+      <section className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold tracking-tight">Главная</h1>
+          <CreateTransactionButton onCreated={handleCreated} />
+        </div>
+        <SummaryCards data={summary.data} loading={summary.loading} error={summary.error} />
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold">Последние транзакции</h2>
+        <TransactionsList
+          data={transactions.data}
+          loading={transactions.loading}
+          error={transactions.error}
+          page={transactions.page}
+          totalPages={transactions.totalPages}
+          total={transactions.total}
+          setPage={transactions.setPage}
+        />
+      </section>
+    </div>
   );
 }

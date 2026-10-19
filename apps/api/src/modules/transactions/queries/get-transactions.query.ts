@@ -8,5 +8,7 @@ export class GetTransactionsQuery implements IQuery {
     public readonly dateTo?: string,
     public readonly type?: TransactionType,
     public readonly categoryId?: string,
+    public readonly page?: number,
+    public readonly limit?: number,
   ) {}
 }

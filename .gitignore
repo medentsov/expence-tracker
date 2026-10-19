@@ -27,3 +27,6 @@ npm-debug.log*
 
 # Turborepo: managed-блок с agent guidance, создаётся автоматически
 AGENTS.md
+
+# Turborepo кэш
+.turbo/

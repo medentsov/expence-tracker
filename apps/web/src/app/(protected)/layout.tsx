@@ -4,9 +4,10 @@ import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useSession } from '@/entities/session';
+import { AppHeader } from '@/features/app-header';
 
 // Group-layout приватных страниц: пока идёт проверка токена — спиннер,
-// если сессии нет — редирект на /login.
+// если сессии нет — редирект на /login. Общая шапка с меню и профилем.
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { status } = useSession();
@@ -30,8 +31,9 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      {children}
-    </main>
+    <div className="flex min-h-screen flex-col">
+      <AppHeader />
+      <main className="mx-auto w-full max-w-5xl flex-1 p-4">{children}</main>
+    </div>
   );
 }
