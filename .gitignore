@@ -30,3 +30,6 @@ AGENTS.md
 
 # Turborepo кэш
 .turbo/
+
+# Локальная память Claude Code (per-project)
+.claude/memory/
