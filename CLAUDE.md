@@ -57,35 +57,9 @@ Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──�
         └────── @tracker/shared ──────┘        (общие типы Category/Expense/CurrencyCode/User)
 ```
 
-### Бэкенд (`apps/api`)
-
-- Вход: `src/main.ts` — bootstrap; глобальный `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`), Swagger на `/api/docs`, CORS для `localhost:3000`.
-- `src/prisma/` — `PrismaModule` (`@Global`) и `PrismaService` (наследник `PrismaClient`; `$connect` в `onModuleInit`, `$disconnect` в `onModuleDestroy`). Подключается свободно, без явного импорта.
-- **CQRS**: `CqrsModule.forRoot()` в `AppModule` регистрирует шины (`CommandBus`/`QueryBus`/`EventBus`) глобально. Модули взаимодействуют **только через шины**, без прямых импортов друг друга. Контроллеры транслируют DTO в команды/запросы; хендлеры (`@CommandHandler`/`@QueryHandler`/`@EventsHandler`) живут в модуле-владельце данных и находятся глобально через `ExplorerService`. Каждый feature-модуль: `*.module.ts`, `*.controller.ts`, `commands/`, `queries/`, `events/`, `dto/`. Фичи: `categories`, `expenses`, `users`, `auth`.
-- `auth` — JWT-авторизация: `POST /auth/register`, `POST /auth/login` (публичные, `@Public()`), `GET /auth/me` (данные из JWT). Глобальный `JwtAuthGuard` (`APP_GUARD` в `AuthModule`) защищает все роуты; секрет и срок жизни токена — из `JWT_SECRET`/`JWT_EXPIRES_IN` (`.env`, `JwtModule.registerAsync` с fail-fast). Пароли — `bcryptjs` (cost 10). Подпись токена — `TokenService`; `RegisterHandler` создаёт пользователя через `CreateUserCommand` (шина), `LoginHandler` читает учётные данные через `GetUserByEmailQuery`.
-- `users` — владелец данных о пользователях: `UserRepository` (Prisma-доступ) + `UsersService` (`toPublicUser` вычищает `passwordHash`). Наружу ничего не экспортирует — только хендлеры через шину. Публикует `UserRegisteredEvent` при регистрации.
-- `categories`/`expenses`/`transactions` — хендлеры работают с `PrismaService` напрямую; `userId` приходит из `@CurrentUser()` через команду/запрос, выборки фильтруются по `userId` (чужая запись → 404).
-- `transactions` — основной модуль учёта: `GET /transactions?dateFrom&dateTo&type&categoryId&page&limit`, `GET /transactions/summary?month&year`, CRUD. Список — **offset-пагинация**: ответ `Paginated<Transaction>` (`{items,total,page,limit}`, по умолчанию `page=1&limit=10`, максимум 100); `amount` приводится `Decimal → number`, даты — ISO-строки. `expenses` — legacy-модуль (создан раньше `transactions`), новый код вести через `transactions`.
-- Prisma-схема: `prisma/schema.prisma` — модели `User` (с `passwordHash`), `Category`, `Expense`, `Transaction` (enum `TransactionType`), поля с `@db.Decimal(12, 2)`, UID-ключи, связи с `onDelete`.
-
-### Фронтенд (`apps/web`)
-
-- App Router поверх `src/app/` (Next сам находит `src/`); страницы — в групповых layout'ах `(auth)` (публичные) и `(protected)` (приватные).
-- **Feature-Sliced Design (FSD)** — слои в `src/`: `app` (роутинг/layouts/guards) → `views` (страницы) → `features` (действия) → `entities` (домен) → `shared` (переиспользуемый код). Правило импортов — **только «вниз»** (вышестоящий слой видит нижестоящие), кросс-импорты внутри слоя запрещены. Каждый слайс отдаёт публичный API через `index.ts`.
-  - Слой pages FSD назван **`views`**, чтобы не конфликтовать с Pages Router Next.js.
-  - `shared` — инфраструктура: `api` (типизированный `fetch` — `apiFetch`, `ApiError`), `config` (env), `lib` (утилиты, `cn`), `ui` (shadcn-компоненты).
-  - `entities/session` — JWT-сессия: контекст `SessionProvider`/`useSession` поверх `localStorage`; токен под ключом `tracker.accessToken`, полный профиль кэшируется в `tracker.user`.
-  - `entities/transaction` — доступ к API транзакций (`listTransactions` c `page`/`limit`, `getTransactionsSummary`, `createTransaction`); токен передаётся аргументом (слой `entities` не импортирует `session` внутри себя).
-  - `entities/category` — `listCategories` (`GET /categories`); токен передаётся аргументом.
-  - `features/auth-login`, `features/auth-register` — формы входа/регистрации (`react-hook-form` + `zod`).
-  - `features/app-header` — общая шапка приватных страниц: меню (Главная/Транзакции/Категории), профиль из `useSession()` и выход. Рендерится в `app/(protected)/layout.tsx`.
-  - `features/transactions-summary` — карточки сводки за текущий месяц (доходы/расходы/баланс).
-  - `features/transactions-list` — список транзакций по 10 на страницу с кнопками «Назад/Вперёд».
-  - `features/transaction-create` — кнопка «Создать» + модалка формы новой транзакции (тип/сумма/категория/дата/описание); после создания обновляет список и сводку.
-  - Форматирование (`formatMoney` в RUB, `formatDate`) — `shared/lib/format.ts`.
-- Алиас `@/*` → `apps/web/src/*` (в `apps/web/tsconfig.json` `paths`). `@tracker/shared` резолвится через `next.config.ts` (`transpilePackages`).
-- **UI** — shadcn/ui + Tailwind CSS v4 (без `tailwind.config.js` — тема в `globals.css` через `@theme`). Компоненты добавляются `npx shadcn@latest add <name>` из `apps/web` и кладутся в `src/shared/ui` (aliases в `components.json`).
-- **Сессия/API**: токен передаётся заголовком `Authorization: Bearer …`; `GET /auth/me` возвращает **JWT-payload** (`{sub,email,name}`), а не `User` — полный профиль берётся из ответов login/register. Базовый URL API — `NEXT_PUBLIC_API_URL` (default `http://localhost:3001`), файл `apps/web/.env.example`.
+Специфика каждого воркспейса — во вложенных `CLAUDE.md`:
+- **[`apps/api/CLAUDE.md`](apps/api/CLAUDE.md)** — bootstrap, CQRS-модули, Prisma, ownership-проверки, JWT, пагинация, DTO.
+- **[`apps/web/CLAUDE.md`](apps/web/CLAUDE.md)** — FSD-слои, роуты, `apiFetch`, shadcn/Tailwind v4, паттерны feature/entity-слайсов, сессия.
 
 ### Общий код (`packages/shared`)
 
