@@ -6,8 +6,16 @@ import { ExpensesController } from './expenses.controller';
 import { GetExpenseHandler } from './queries/handlers/get-expense.handler';
 import { GetExpensesHandler } from './queries/handlers/get-expenses.handler';
 
-// Модуль расходов: контроллер транслирует запросы в команды/запросы CQRS,
-// логика живёт в хендлерах.
+/**
+ * Модуль расходов (legacy).
+ *
+ * ⚠️ Создан раньше `transactions`; поддерживается для обратной совместимости.
+ * Новый код вести через `transactions`. Экспонирует только контроллер и
+ * регистрирует CQRS-хендлеры; наружу не экспортирует провайдеров.
+ *
+ * Хендлеры работают с `PrismaService` напрямую (глобальный модуль), фильтрация
+ * по `userId` — внутри хендлеров/ownership-проверок.
+ */
 @Module({
   controllers: [ExpensesController],
   providers: [

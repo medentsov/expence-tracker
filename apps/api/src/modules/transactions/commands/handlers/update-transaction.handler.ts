@@ -5,6 +5,16 @@ import { GetCategoryQuery } from '../../../categories/queries/get-category.query
 import { findOwnedTransaction } from '../../transaction-ownership';
 import { UpdateTransactionCommand } from '../update-transaction.command';
 
+/**
+ * Обработчик команды частичного обновления транзакции.
+ *
+ * Проверяет владение транзакцией (`findOwnedTransaction`), при смене категории —
+ * её принадлежность пользователю (через шину). Обновляет только переданные поля
+ * (PATCH-семантика). Дата конвертируется в `Date`.
+ *
+ * @throws `NotFoundException` — транзакция не найдена/чужая, либо новая категория
+ *         не принадлежит пользователю.
+ */
 @CommandHandler(UpdateTransactionCommand)
 export class UpdateTransactionHandler implements ICommandHandler<UpdateTransactionCommand, Transaction> {
   constructor(
@@ -12,6 +22,16 @@ export class UpdateTransactionHandler implements ICommandHandler<UpdateTransacti
     private readonly queryBus: QueryBus,
   ) {}
 
+  /**
+   * Выполняет обновление транзакции.
+   *
+   * @param command Команда с `userId`/`id` и опциональными полями (`UpdateTransactionCommand`).
+   *
+   * @returns Обновлённую сущность `Transaction` (без вложенной категории).
+   *
+   * @throws `NotFoundException` — транзакция не найдена/чужая, либо новая
+   *         категория (`categoryId`) не принадлежит пользователю.
+   */
   async execute(command: UpdateTransactionCommand): Promise<Transaction> {
     await findOwnedTransaction(this.prisma, command.userId, command.id);
 

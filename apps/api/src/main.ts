@@ -3,6 +3,13 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
+/**
+ * Точка входа NestJS-приложения.
+ *
+ * Создаёт приложение, включает CORS для фронтенда, глобальную валидацию DTO,
+ * Swagger/OpenAPI на `/api/docs` и запускает HTTP-сервер на порту `PORT` (по
+ * умолчанию 3001).
+ */
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
@@ -12,7 +19,8 @@ async function bootstrap(): Promise<void> {
     credentials: true,
   });
 
-  // Глобальная валидация DTO.
+  // Глобальная валидация DTO: whitelist (отбросить лишние), forbidNonWhitelisted
+  // (ошибка на не-объявленные поля), transform (преобразование query-параметров).
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

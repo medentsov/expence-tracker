@@ -7,6 +7,20 @@ import { GetTransactionsHandler } from './queries/handlers/get-transactions.hand
 import { GetTransactionsSummaryHandler } from './queries/handlers/get-transactions-summary.handler';
 import { TransactionsController } from './transactions.controller';
 
+/**
+ * Модуль транзакций (доходы/расходы).
+ *
+ * Владелец данных о транзакциях. Экспонирует только контроллер и регистрирует
+ * CQRS-хендлеры; наружу не экспортирует ни одного провайдера — взаимодействие
+ * с другими модулями идёт только через `CommandBus`/`QueryBus` (по правилу CQRS).
+ *
+ * Хендлеры находятся глобально через `ExplorerService`, поэтому здесь не требуется
+ * обмениваться импортами с `categories`/`auth`. Схема и данные — в `prisma/schema.prisma`.
+ *
+ * Провайдеры:
+ * - команды: `CreateTransactionHandler`, `UpdateTransactionHandler`, `DeleteTransactionHandler`;
+ * - запросы: `GetTransactionsHandler`, `GetTransactionHandler`, `GetTransactionsSummaryHandler`.
+ */
 @Module({
   controllers: [TransactionsController],
   providers: [

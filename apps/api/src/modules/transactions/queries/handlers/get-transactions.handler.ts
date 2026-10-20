@@ -5,12 +5,31 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import type { TransactionWithCategory } from '../../transaction-ownership';
 import { GetTransactionsQuery } from '../get-transactions.query';
 
+/**
+ * Обработчик постраничного списка транзакций с фильтрами.
+ *
+ * Строит `where` по переданным фильтрам (`type`/`categoryId`/`dateFrom`/`dateTo`),
+ * выполняет `findMany` (с пагинацией `skip`/`take`) и `count` в одной транзакции
+ * для консистентного `total`. `Decimal`/`Date` приводится к JSON-представлению
+ * shared-типов (`amount: number`, даты — ISO-строки).
+ */
 @QueryHandler(GetTransactionsQuery)
 export class GetTransactionsHandler
   implements IQueryHandler<GetTransactionsQuery, Paginated<Transaction>>
 {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Выполняет получение списка транзакций.
+   *
+   * @param query Запрос (`GetTransactionsQuery`) с фильтрами и пагинацией.
+   *
+   * @returns `Paginated<Transaction>`: `{ items, total, page, limit }`, отсортирован
+   *          по `date` desc; категория вложена; `amount` — число, даты — ISO-строки.
+   *
+   * @throws `BadRequestException` — инвалидные параметры (валидация DTO;
+   *         в хендлер не попадают, но типы гарантируют диапазон).
+   */
   async execute(query: GetTransactionsQuery): Promise<Paginated<Transaction>> {
     const where: Prisma.TransactionWhereInput = {
       userId: query.userId,

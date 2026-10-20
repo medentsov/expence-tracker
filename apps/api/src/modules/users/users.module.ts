@@ -5,8 +5,16 @@ import { GetUserByEmailHandler } from './queries/handlers/get-user-by-email.hand
 import { UserRepository } from './users.repository';
 import { UsersService } from './users.service';
 
-// Модуль-владелец данных о пользователях. Взаимодействие с ним идёт через шины
-// CQRS (CommandBus/QueryBus/EventBus), поэтому ничего не экспортируется наружу.
+/**
+ * Модуль-владелец данных о пользователях.
+ *
+ * Контроллера нет: наружу ничего не экспортирует — взаимодействие с ним идёт
+ * только через шины CQRS (`CommandBus`/`QueryBus`/`EventBus`). Регистрирует
+ * репозиторий, сервис и CQRS-хендлеры (команда создания, запрос по email,
+ * событие регистрации).
+ *
+ * Схема и данные — в `prisma/schema.prisma` (модель `User` с `passwordHash`).
+ */
 @Module({
   providers: [
     UsersService,

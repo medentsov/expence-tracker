@@ -5,8 +5,15 @@ import { CreateUserCommand } from '../../../users/commands/create-user.command';
 import { TokenService } from '../../services/token.service';
 import { RegisterCommand } from '../register.command';
 
+/**
+ * Обработчик команды регистрации.
+ *
+ * Хэширует пароль (bcrypt, cost 10), создаёт пользователя через `CreateUserCommand`
+ * (шина → модуль `users`, где проверяется уникальность email) и выдаёт access-токен.
+ */
 @CommandHandler(RegisterCommand)
 export class RegisterHandler implements ICommandHandler<RegisterCommand, AuthResponse> {
+  /** Стоимость хэширования bcrypt. */
   private static readonly BCRYPT_ROUNDS = 10;
 
   constructor(
@@ -14,6 +21,16 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand, AuthRes
     private readonly tokenService: TokenService,
   ) {}
 
+  /**
+   * Выполняет регистрацию.
+   *
+   * @param command Команда (`RegisterCommand`) с email, паролем и опциональным именем.
+   *
+   * @returns `AuthResponse`: `{ accessToken, user }` (полный публичный профиль).
+   *
+   * @throws `ConflictException` — пользователь с таким email уже существует
+   *         (бросает `CreateUserHandler` в модуле `users`).
+   */
   async execute(command: RegisterCommand): Promise<AuthResponse> {
     const passwordHash = await bcrypt.hash(command.password, RegisterHandler.BCRYPT_ROUNDS);
 

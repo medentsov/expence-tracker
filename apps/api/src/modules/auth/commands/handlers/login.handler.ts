@@ -7,6 +7,16 @@ import type { UserCredentials } from '../../../users/types/user-credentials';
 import { TokenService } from '../../services/token.service';
 import { LoginCommand } from '../login.command';
 
+/**
+ * Обработчик команды входа.
+ *
+ * Получает учётные данные по email через `GetUserByEmailQuery` (шина → модуль `users`),
+ * сверяет пароль через bcrypt и выдаёт access-токен. Дата/время пользователя
+ * приводятся к ISO-строкам для публичного ответа.
+ *
+ * @throws `UnauthorizedException` — пользователь не найден или пароль неверен
+ *         (одинаковое сообщение против перебора).
+ */
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand, AuthResponse> {
   constructor(
@@ -14,6 +24,16 @@ export class LoginHandler implements ICommandHandler<LoginCommand, AuthResponse>
     private readonly tokenService: TokenService,
   ) {}
 
+  /**
+   * Выполняет вход.
+   *
+   * @param command Команда (`LoginCommand`) с email и паролем.
+   *
+   * @returns `AuthResponse`: `{ accessToken, user }` (полный публичный профиль).
+   *
+   * @throws `UnauthorizedException` — «Неверный email или пароль» для отсутствующего
+   *         пользователя и неверного пароля (одинаково, чтобы не раскрывать наличие).
+   */
   async execute(command: LoginCommand): Promise<AuthResponse> {
     const credentials = await this.queryBus.execute<GetUserByEmailQuery, UserCredentials | null>(
       new GetUserByEmailQuery(command.email),

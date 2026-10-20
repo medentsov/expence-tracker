@@ -5,8 +5,14 @@ import type { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import type { JwtPayload } from '../interfaces/jwt-payload.interface';
 
-// Глобальный guard: пропускает публичные (@Public) эндпоинты, для остальных
-// проверяет Bearer-токен и кладёт пользователя в request.
+/**
+ * Глобальный guard авторизации (зарегистрирован через `APP_GUARD`).
+ *
+ * Пропускает эндпоинты, помеченные `@Public()`. Для остальных извлекает Bearer-токен,
+ * верифицирует его через `JwtService` и кладёт пользователя в `request.user`.
+ *
+ * @throws `UnauthorizedException` — токен отсутствует или невалиден.
+ */
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
@@ -14,6 +20,16 @@ export class JwtAuthGuard implements CanActivate {
     private readonly reflector: Reflector,
   ) {}
 
+  /**
+   * Решает, можно ли выполнить обработчик для данного запроса.
+   *
+   * @param context Контекст выполнения (`ExecutionContext`).
+   *
+   * @returns `true`, если эндпоинт публичный или токен валиден.
+   *
+   * @throws `UnauthorizedException` — отсутствует Bearer-токен
+   *         (`Требуется авторизация`) или токен невалиден (`Недействительный токен`).
+   */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
@@ -38,6 +54,13 @@ export class JwtAuthGuard implements CanActivate {
     }
   }
 
+  /**
+   * Извлекает Bearer-токен из заголовка `Authorization`.
+   *
+   * @param request HTTP-запрос Express.
+   *
+   * @returns Токен строка, если заголовок вида `Bearer <token>`, иначе `undefined`.
+   */
   private extractBearerToken(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
