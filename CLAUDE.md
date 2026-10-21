@@ -72,17 +72,7 @@ Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──�
 - `apps/api/.env` — локальный, создаётся из `apps/api/.env.example` и в git не попадает (`DATABASE_URL`, `PORT`). Внешние переменные окружения брать из него, а не зашивать в код.
 - Git-identity настроен локально (`user.name` = Alexander Medentsov).
 - **Память Claude Code** хранится локально в `.claude/memory/` (в папке проекта, не глобально) и в git не попадает (в `.gitignore`). Файлы памяти: `MEMORY.md` (индекс) + отдельные `.md`-файлы с frontmatter (`type: user|feedback|project|reference`).
-- **Коммиты** — формат Conventional Commits: `<type>: <описание>` (типы `feat`, `fix`, `chore`, `docs`, `refactor`, `test`; опционально scope — `feat(api)`, `feat(web)`). Сообщение — на русском. Каждое сообщение завершать строкой `Co-Authored-By: Claude Code <noreply@anthropic.com>`. Коммитить **только по явному запросу** пользователя, не автоматически по завершении задачи.
-
-## Ветки и рабочий процесс (GitHub Flow)
-- `main` — всегда рабочая ветка: код в ней должен собираться (`npm run build`), проходить `npm run lint` и `npm run typecheck`. Прямые коммиты в `main` запрещены.
-- Каждая новая фича/исправление — в отдельной ветке от актуального `main`. Имя ветки — `<type>/<краткое-описание-в-kebab-case>`, где `<type>` из Conventional Commits: `feat/`, `fix/`, `chore/`, `docs/`, `refactor/`, `test/`. Пример: `feat/main-screen-frontend`.
-- Перед созданием ветки — переключиться на `main` и обновить её (`git pull`/`git fetch`); ветка создаётся от свежего `main`.
-- В ветке — небольшие атомарные коммиты с Conventional Commits (см. выше). Одна ветка — одна фича; не смешивать несвязанные изменения.
-- Завершённая работа mergится в `main` через Pull Request (не напрямую). Перед PR — ветка перебазируется/мержится с актуальным `main`, проверки (`npm run typecheck`, `npm run lint`, `npm run build`) проходят зелёными.
-- **Pull Request** создаётся через `gh pr create`. Заголовок — по Conventional Commits (тип + scope + описание, на русском: `feat(web): главный экран с пагинацией транзакций`). В тело PR включать: что реализовано (инпойнты/экраны/эндпоинты), ключевые изменения по слоям (shared/api/web), как проверить (`npm run dev`, тестовые данные), и что осталось/следующие шаги. Описание завершать строкой `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
-- После мержа ветка удаляется; новая фича начинается с новой ветки от обновлённого `main`.
-- Ветку создаёт/переключает агент сразу при старте новой фичи; PR создаётся только по явному запросу пользователя.
+- **Коммиты, ветки и PR (GitHub Flow)** — по skill `/commit-to-branch`: все правила вынесены туда (создание ветки от свежего `main`, атомарные коммиты по Conventional Commits, атрибуция `Co-Authored-By`, создание PR). Коммитить и открывать PR **только по явному запросу** пользователя.
 
 ## Обновление docs
 При добавлении функционала, проверяй документацию в @.claude/docs/ и актуализируй
