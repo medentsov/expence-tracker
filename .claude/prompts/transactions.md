@@ -59,7 +59,7 @@ npx prisma migrate dev --name add-transactions
     DELETE /transactions/:id: удалить
 
 ## Паттерн
-Используй /home/medniy/Claude/expence-tracker/apps/api/src/modules/categories как образец для структуры для
+Используй apps/api/src/modules/categories как образец для структуры для
 backend
 
 ## Ограничения
