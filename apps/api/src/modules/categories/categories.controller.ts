@@ -3,6 +3,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiConflictResponse,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -148,6 +149,7 @@ export class CategoriesController {
    *
    * @throws `NotFoundException` — категория не найдена или принадлежит другому
    *         пользователю (404).
+   * @throws `ConflictException` — в категории есть транзакции или расходы (409).
    * @throws `BadRequestException` — `id` не является валидным UUID.
    * @throws `UnauthorizedException` — отсутствует/невалиден токен.
    */
@@ -155,6 +157,7 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Удалить категорию' })
   @ApiOkResponse({ type: CategoryResponseDto, description: 'Категория удалена' })
   @ApiBadRequestResponse({ description: 'id не является валидным UUID' })
+  @ApiConflictResponse({ description: 'В категории есть операции' })
   @ApiUnauthorizedResponse({ description: 'Требуется авторизация' })
   @ApiNotFoundResponse({ description: 'Категория не найдена или принадлежит другому пользователю' })
   @ApiInternalServerErrorResponse({ description: 'Внутренняя ошибка сервера' })
