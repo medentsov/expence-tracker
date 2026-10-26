@@ -20,9 +20,9 @@ export function RegisterForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
         {rootError ? (
-          <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <p role="alert" className="rounded-xl bg-destructive/10 px-3.5 py-2.5 text-sm text-destructive">
             {rootError}
           </p>
         ) : null}
@@ -86,14 +86,14 @@ export function RegisterForm() {
                   Согласен с{' '}
                   <Link
                     href="/terms"
-                    className="font-medium text-blue-600 underline-offset-4 hover:text-blue-700 hover:underline"
+                    className="font-medium text-foreground underline underline-offset-4"
                   >
                     пользовательским соглашением
                   </Link>{' '}
                   и{' '}
                   <Link
                     href="/privacy"
-                    className="font-medium text-blue-600 underline-offset-4 hover:text-blue-700 hover:underline"
+                    className="font-medium text-foreground underline underline-offset-4"
                   >
                     политикой обработки данных
                   </Link>
