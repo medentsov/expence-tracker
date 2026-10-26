@@ -32,7 +32,7 @@ User, авторизация JWT, модуль категорий + frontend а�
 []
 
 ## Паттерн
-Используй /home/medniy/Claude/expence-tracker/apps/api/src/modules/categories как образец для структуры для
+Используй apps/api/src/modules/categories как образец для структуры для
 backend
 
 ## Ограничения
