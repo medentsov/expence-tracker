@@ -139,7 +139,7 @@ function GroupHeader({
 
   return (
     <tr className={cn(showDivider && 'border-t border-border/60')}>
-      <td colSpan={3} className="pt-4 pb-1.5">
+      <td colSpan={3} className="pt-4 pb-1.5 align-middle">
         <div className="flex items-center gap-2">
           {grouping === 'category' ? (
             <span
@@ -156,10 +156,12 @@ function GroupHeader({
           </span>
         </div>
       </td>
-      <td className="pt-4 pr-1 pb-1.5 pl-3 text-right">
+      <td className="pt-4 pr-1 pb-1.5 pl-3 text-right align-middle">
         <span
           className={cn(
-            'text-[11px] leading-4 font-semibold tabular-nums',
+            // Итог группы — денежное значение, поэтому размер как у сумм в строках,
+            // но крупнее и жирнее: это агрегат, он должен читаться первым.
+            'font-display text-base leading-6 font-bold whitespace-nowrap tabular-nums',
             isPositive ? 'text-positive' : isNegative ? 'text-negative' : 'text-muted-foreground',
           )}
         >
