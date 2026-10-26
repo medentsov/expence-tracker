@@ -3,7 +3,6 @@
 import type { Category, TransactionType } from '@tracker/shared';
 import { useState } from 'react';
 import { currentMonthRange } from '@/shared/lib/date';
-import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 import { Input } from '@/shared/ui/input';
@@ -152,7 +151,7 @@ export function TransactionsFilterBar({
           </div>
 
           <div className="sm:col-span-2 lg:col-span-3">
-            <Button variant="ghost" size="sm" onClick={applyMonth} className={cn('px-0')}>
+            <Button variant="ghost" size="sm" onClick={applyMonth}>
               Текущий месяц
             </Button>
           </div>
