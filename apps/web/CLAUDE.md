@@ -17,7 +17,7 @@ npm run lint -w @tracker/web     # next lint (НЕ eslint напрямую)
 
 - **`tsconfig.json`**: extends `../../tsconfig.base.json`; `module: esnext`, `moduleResolution: bundler`, `jsx: preserve`. Алиасы: `@/*` → `./src/*`, `@tracker/shared` → `../../packages/shared/src`.
 - **`next.config.ts`**: единственная настройка — `transpilePackages: ['@tracker/shared']`.
-- **`components.json`** (shadcn): `style: new-york`, `rsc: true`, `iconLibrary: lucide`. Aliases: `components/ui` → `@/shared/ui`, `utils` → `@/shared/lib/utils`, `hooks` → `@/shared/lib/hooks`. Tailwind v4 (`tailwind.config: ""`, тема в `src/app/globals.css` через `@theme`).
+- **`components.json`** (shadcn): `style: new-york`, `rsc: true`, `iconLibrary: lucide` (значение только для CLI; в рантайме иконки — inline SVG из `shared/ui/icon.tsx`). Aliases: `components/ui` → `@/shared/ui`, `utils` → `@/shared/lib/utils`, `hooks` → `@/shared/lib/hooks`. Tailwind v4 (`tailwind.config: ""`, тема в `src/app/globals.css` через `@theme`).
 - **`postcss.config.mjs`**: только `@tailwindcss/postcss` (Tailwind v4).
 - **`.env.example`**: `NEXT_PUBLIC_API_URL="http://localhost:3001"` — единственная переменная.
 - **Линт**: своего `eslint.config.*` в `apps/web` нет. Web линтится встроенным `next lint`. Корневой `eslint.config.js` (ESLint 9, typescript-eslint) покрывает только `apps/api` и `packages/shared`, web туда **не входит**.
@@ -39,6 +39,8 @@ shared/     → инфраструктура (api, config, lib, ui)
 - `/` → редирект по статусу сессии.
 - `(auth)/` — публичные: `/login`, `/register` (guard: авторизован → `/dashboard`).
 - `(protected)/` — приватные: `/dashboard`, `/transactions`, `/categories` (guard: нет токена → `/login`).
+  `/transactions` — полный список операций с пагинацией и фильтрами (период, тип, категория);
+  `/categories` — справочник категорий: просмотр, создание и редактирование.
 - Статичные: `/privacy`, `/terms`.
 
 `page.tsx` — тонкая обёртка над view-компонентом с `metadata`.
@@ -51,7 +53,27 @@ shared/     → инфраструктура (api, config, lib, ui)
 - **`shared/lib/utils.ts`**: реэкспорт `cn` и `ClassValue` из пакета `cn` (drop-in clsx+tailwind-merge от shadcn CLI 4.x). Единая точка для shadcn-компонентов: `@/shared/lib/utils`.
 - **`shared/lib/format.ts`**: `formatMoney(amount)` — `Intl.NumberFormat('ru-RU', { currency: 'RUB' })`; `formatDate(iso)` — `ДД.ММ.ГГГГ`.
 - **`shared/lib/date.ts`**: `todayInputDate()` — локальная дата `YYYY-MMDD` для `<input type="date">` (не UTC, как `toISOString().slice()`).
-- **`shared/ui/`** — shadcn-компоненты (13 шт.): badge, button, card, checkbox, dialog, dropdown-menu, form, input, label, select, separator, skeleton, sonner. Добавляются `npx shadcn@latest add <name>` из `apps/web`.
+- **`shared/ui/`** — shadcn-компоненты: badge, button, card, checkbox, dialog, dropdown-menu, form, input, label, select, separator, sheet, skeleton, sonner. Добавляются `npx shadcn@latest add <name>` из `apps/web`.
+  Плюс собственные примитивы дизайн-системы: `icon` (единственный источник inline-SVG иконок), `stat-card`, `ink-panel`, `empty-state`, `theme-provider`, `theme-toggle`.
+  Все импортируют `cn` из `@/shared/lib/utils` (не из пакета `cn`).
+  **Иконки — только inline SVG** через `Icon` (`shared/ui/icon.tsx`): ключ → массив path-строк, содержимое обёрнуто в `<g>`. Пакет `lucide-react` удалён.
+
+## Дизайн-система
+
+Токены — в `src/app/globals.css` (Tailwind v4, `@theme inline`, OKLCH):
+
+- Визуальный язык — **dark-first premium**: глубокий синий/чёрный фон (`--background`), полупрозрачные поверхности и карточки с `backdrop-blur-xl`, тонкие рамки `border-white/10`. По умолчанию включена тёмная тема (`defaultTheme="dark"`).
+- Шелл: `bg-background` с mesh-свечением на `body`; панель контента — `bg-surface/70 backdrop-blur-2xl` + `shadow-panel`.
+- Главный акцент — `BalanceCard` (`features/transactions-summary`): индиго-пурпурный mesh-градиент, стеклянные вставки, реальные цифры сводки.
+- Деньги: `text-positive` / `text-negative` — **не** `text-emerald-600` / `text-red-600`.
+- KPI: `--tint-mint/sky/peach`; тёмная панель: `--ink-panel*`, компонент `InkPanel`.
+- Кнопки: `rounded-full`, `hover:scale-105 active:scale-95 transition-all duration-300`, основная — `bg-primary` + `shadow-glow`.
+- Шрифты: `font-display` (Manrope, заголовки/суммы), `font-sans` (Inter). Подключены в `app/layout.tsx` через `next/font/google`, **`subsets: ['latin','cyrillic']` обязателен**.
+- Суммы всегда с `tabular-nums`, чтобы колонки не «плясали».
+- Тема: `next-themes` (`attribute="class"`), `suppressHydrationWarning` на `<html>`, переключатель в топбаре.
+- Иконки: `Icon` из `@/shared/ui/icon`, никаких icon-пакетов; для категорий — `iconForCategory(name)`.
+
+**Шелл приватной зоны** — слайс `features/app-sidebar`: `AppSidebar` (десктоп, 256px, sticky), `MobileSidebar` (Sheet, < lg), `Topbar` (тема + профиль), `SidebarNav`/`SidebarLogo` (общие). Слайс `features/app-header` удалён.
 
 ## Паттерн feature-слайса
 
@@ -64,7 +86,9 @@ model/use-*.ts                # react-hook-form хук логики
 ui/<Component>.tsx            # UI-компонент
 ```
 
-Существующие features: `auth-login`, `auth-register`, `app-header`, `transactions-summary`, `transactions-list`, `transaction-create`.
+Существующие features: `auth-login`, `auth-register`, `app-sidebar`, `transactions-summary` (`BalanceCard` с mesh-градиентом, `SummaryCards`, `MonthLedger`, строгая модель `WalletStats`; плитки «Доходы»/«Расходы» ведут на `/transactions?type=INCOME|EXPENSE`), `transactions-list` (хук принимает `TransactionsFilter` с `sortBy`/`sortOrder`; локальная строгая модель `Transaction` + адаптер `toTransaction`; таблица с сортируемыми заголовками `Наименование/Категория/Дата/Сумма`, строки `TransactionRow`, клик открывает редактирование; `TransactionsViewBar` — сегментированный переключатель типа `Все/Доходы/Расходы` + визуальная группировка по датам/категориям через `groupTransactions`), `transactions-filter` (панель фильтров без типа операции + `toApiFilter`), `transaction-create` (создание, редактирование и удаление: общие `TransactionFields`, `EditTransactionDialog`; реэкспортирует `useCategories`), `category-manage` (создание/редактирование/удаление категорий: `CategoryDialog` с палитрой и эмодзи).
+
+Сортировка уходит в API (корректна на всех страницах), группировка — визуальная и применяется к уже загруженной странице (10 записей). Необратимые действия подтверждаются общим `shared/ui/confirm-dialog.tsx`.
 
 ## Паттерн entity-слайса
 
@@ -77,7 +101,7 @@ model/storage.ts              # localStorage (tracker.accessToken, tracker.user)
 model/types.ts                # типы
 ```
 
-`entities/transaction` (создание/список/сводка), `entities/category` (список). **Токен передаётся аргументом** — entity-слой не импортирует `session` внутри себя (FSD: кросс-импорт внутри слоя запрещён).
+`entities/transaction` (создание/обновление/удаление/список/сводка), `entities/category` (список, создание, обновление, удаление). **Токен передаётся аргументом** — entity-слой не импортирует `session` внутри себя (FSD: кросс-импорт внутри слоя запрещён).
 
 ## Сессия
 

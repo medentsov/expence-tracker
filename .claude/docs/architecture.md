@@ -112,6 +112,17 @@ shared/     → инфраструктура (api, config, lib, ui)
 
 Слой pages назван `views`, чтобы не конфликтовать с Pages Router.
 
+### Визуальная система
+
+Дизайн-токены живут в `apps/web/src/app/globals.css` (Tailwind v4, `@theme inline` + `:root`/`.dark` в OKLCH):
+
+- **Шелл** — серый фон `--background`, белая «панель контента» `--surface` со скруглением `rounded-3xl`, сайдбар того же цвета, что и фон.
+- **Семантика денег** — `--positive` / `--negative` вместо хардкода `emerald/red`.
+- **Пастельные KPI** — `--tint-mint` / `--tint-sky` / `--tint-peach`; тёмная акцентная панель — `--ink-panel*`.
+- **Типографика** — Manrope (`font-display`, заголовки и суммы) + Inter (`font-sans`, текст), подключены через `next/font/google` с `subsets: ['latin','cyrillic']`. Кириллица обязательна: у ряда латинских гротесков (напр. Plus Jakarta Sans) нет basic-cyrillic.
+- **Тема** — `next-themes` (`attribute="class"`), переключатель `shared/ui/theme-toggle.tsx`; на `<html>` нужен `suppressHydrationWarning`.
+- **Шелл приватной зоны** — `features/app-sidebar` (сайдбар + мобильный `Sheet` + топбар с профилем).
+
 ### Паттерн feature-слайса (эталон `auth-login`)
 
 ```
