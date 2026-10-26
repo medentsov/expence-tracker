@@ -69,9 +69,12 @@ events/                     # опционально (есть в users)
 - `@CurrentUser()` → `request.user` (`AuthenticatedUser` `{ id, email, name? }`). `id` — это `JwtPayload.sub`.
 
 ## Пагинация (`transactions`)
-- `GET /transactions?dateFrom&dateTo&type&categoryId&page&limit` — offset-пагинация. Ответ `Paginated<Transaction>` = `{ items, total, page, limit }`. По умолчанию `page=1&limit=10`, максимум `limit=100`.
+- `GET /transactions?dateFrom&dateTo&type&categoryId&sortBy&sortOrder&page&limit` — offset-пагинация. Ответ `Paginated<Transaction>` = `{ items, total, page, limit }`. По умолчанию `page=1&limit=10`, максимум `limit=100`.
+- `sortBy` — `name|date|amount|category` (по умолчанию `date`), `sortOrder` — `asc|desc` (по умолчанию `desc`). `name` сортирует по `description` (пустые описания упорядочиваются по категории). Сортировка серверная: меняется порядок всех страниц, а не только текущей. Для стабильной пагинации к выбранному полю добавлены вторичные ключи (`date`, `id`).
 - `amount` приводится `Decimal → number`, даты — ISO-строки (в хендлере явно `.toISOString()`), чтобы соответствовать shared-типам.
 - `GET /transactions/summary?month&year` — сводка `{ totalIncome, totalExpense, balance }`.
+- `DELETE /transactions/:id` — удаление своей транзакции (404 на чужую/несуществующую).
+- `DELETE /categories/:id` — удаление категории; если в ней есть `Transaction`/`Expense` (связи `onDelete: Restrict`), возвращает **409 Conflict** с просьбой сначала перенести или удалить операции.
 
 ## DTO
 - class-validator + class-transformer + Swagger-декораторы (`@ApiProperty`, `@ApiPropertyOptional`).

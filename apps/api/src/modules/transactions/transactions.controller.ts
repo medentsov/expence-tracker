@@ -116,10 +116,12 @@ export class TransactionsController {
    * Возвращает постраничный список транзакций с фильтрами.
    *
    * @param user  Текущий пользователь из JWT.
-   * @param query Фильтры и пагинация: `dateFrom`/`dateTo`/`type`/`categoryId`/`page`/`limit`.
+   * @param query Фильтры, сортировка и пагинация:
+   *              `dateFrom`/`dateTo`/`type`/`categoryId`/`sortBy`/`sortOrder`/`page`/`limit`.
    *
    * @returns `Paginated<Transaction>`: `{ items, total, page, limit }`, отсортирован
-   *          по `date` desc, категория вложена. `amount` — число, даты — ISO-строки.
+   *          по выбранному полю (по умолчанию `date` desc), категория вложена.
+   *          `amount` — число, даты — ISO-строки.
    *
    * @throws `BadRequestException` — невалидные параметры (валидация DTO).
    * @throws `UnauthorizedException` — отсутствует/невалиден токен.
@@ -140,6 +142,8 @@ export class TransactionsController {
         query.categoryId,
         query.page,
         query.limit,
+        query.sortBy,
+        query.sortOrder,
       ),
     );
   }

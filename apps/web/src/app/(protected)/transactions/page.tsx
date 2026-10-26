@@ -3,6 +3,13 @@ import { TransactionsPage } from '@/views/transactions/ui/TransactionsPage';
 
 export const metadata: Metadata = { title: 'Транзакции — Трекер расходов' };
 
-export default function TransactionsRoute() {
-  return <TransactionsPage />;
+interface TransactionsRouteProps {
+  /** `?type=INCOME|EXPENSE` — переход с главной по плиткам «Доходы»/«Расходы». */
+  searchParams: Promise<{ type?: string }>;
+}
+
+export default async function TransactionsRoute({ searchParams }: TransactionsRouteProps) {
+  const { type } = await searchParams;
+
+  return <TransactionsPage initialType={type} />;
 }

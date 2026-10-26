@@ -1,7 +1,15 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { TransactionType } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsDateString, IsEnum, IsInt, IsOptional, IsUUID, Max, Min } from 'class-validator';
+import { IsDateString, IsEnum, IsIn, IsInt, IsOptional, IsUUID, Max, Min } from 'class-validator';
+
+/** Поля, по которым можно упорядочить список транзакций. */
+export const TRANSACTION_SORT_FIELDS = ['name', 'date', 'amount', 'category'] as const;
+export type TransactionSortField = (typeof TRANSACTION_SORT_FIELDS)[number];
+
+/** Направления сортировки. */
+export const TRANSACTION_SORT_ORDERS = ['asc', 'desc'] as const;
+export type TransactionSortOrder = (typeof TRANSACTION_SORT_ORDERS)[number];
 
 /**
  * Query-параметры списка транзакций (`GET /transactions`).
@@ -33,6 +41,26 @@ export class GetTransactionsQueryDto {
   @IsOptional()
   @IsUUID()
   categoryId?: string;
+
+  /** Поле сортировки (по умолчанию `date`). */
+  @ApiPropertyOptional({
+    enum: TRANSACTION_SORT_FIELDS,
+    description: 'Поле сортировки',
+    default: 'date',
+  })
+  @IsOptional()
+  @IsIn(TRANSACTION_SORT_FIELDS)
+  sortBy?: TransactionSortField;
+
+  /** Направление сортировки (по умолчанию `desc`). */
+  @ApiPropertyOptional({
+    enum: TRANSACTION_SORT_ORDERS,
+    description: 'Направление сортировки',
+    default: 'desc',
+  })
+  @IsOptional()
+  @IsIn(TRANSACTION_SORT_ORDERS)
+  sortOrder?: TransactionSortOrder;
 
   /** Номер страницы (с 1, по умолчанию 1). */
   @ApiPropertyOptional({ example: 1, description: 'Номер страницы (с 1)', default: 1 })

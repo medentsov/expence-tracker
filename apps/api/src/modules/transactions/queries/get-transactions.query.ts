@@ -1,5 +1,6 @@
 import { IQuery } from '@nestjs/cqrs';
 import type { TransactionType } from '@prisma/client';
+import type { TransactionSortField, TransactionSortOrder } from '../dto/get-transactions-query.dto';
 
 /**
  * Запрос постраничного списка транзакций с фильтрами.
@@ -13,6 +14,8 @@ import type { TransactionType } from '@prisma/client';
  * @param categoryId Фильтр по UUID категории.
  * @param page       Номер страницы (с 1, по умолчанию 1).
  * @param limit      Размер страницы (1–100, по умолчанию 10).
+ * @param sortBy     Поле сортировки (по умолчанию `date`).
+ * @param sortOrder  Направление сортировки (по умолчанию `desc`).
  */
 export class GetTransactionsQuery implements IQuery {
   constructor(
@@ -23,5 +26,7 @@ export class GetTransactionsQuery implements IQuery {
     public readonly categoryId?: string,
     public readonly page?: number,
     public readonly limit?: number,
+    public readonly sortBy?: TransactionSortField,
+    public readonly sortOrder?: TransactionSortOrder,
   ) {}
 }

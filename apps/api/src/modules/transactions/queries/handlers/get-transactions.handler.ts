@@ -5,6 +5,36 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import type { TransactionWithCategory } from '../../transaction-ownership';
 import { GetTransactionsQuery } from '../get-transactions.query';
 
+// Полный набор ключей сортировки: выбранное поле + вторичные ключи.
+// Вторичные ключи делают порядок детерминированным при равных значениях,
+// иначе страницы могут «пересекаться» и дублировать записи.
+function buildOrderBy(
+  sortBy: GetTransactionsQuery['sortBy'],
+  sortOrder: GetTransactionsQuery['sortOrder'],
+): Prisma.TransactionOrderByWithRelationInput[] {
+  const direction = sortOrder ?? 'desc';
+
+  switch (sortBy) {
+    case 'amount':
+      return [{ amount: direction }, { date: 'desc' }, { id: 'asc' }];
+    case 'category':
+      return [{ category: { name: direction } }, { date: 'desc' }, { id: 'asc' }];
+    case 'name':
+      // Пустое описание — не редкость, поэтому при равных названиях
+      // (и для записей без описания) порядок задаёт категория.
+      return [
+        { description: direction },
+        { category: { name: 'asc' } },
+        { date: 'desc' },
+        { id: 'asc' },
+      ];
+    case 'date':
+    default:
+      return [{ date: direction }, { id: 'asc' }];
+  }
+}
+
+
 /**
  * Обработчик постраничного списка транзакций с фильтрами.
  *
@@ -22,10 +52,11 @@ export class GetTransactionsHandler
   /**
    * Выполняет получение списка транзакций.
    *
-   * @param query Запрос (`GetTransactionsQuery`) с фильтрами и пагинацией.
+   * @param query Запрос (`GetTransactionsQuery`) с фильтрами, сортировкой и пагинацией.
    *
    * @returns `Paginated<Transaction>`: `{ items, total, page, limit }`, отсортирован
-   *          по `date` desc; категория вложена; `amount` — число, даты — ISO-строки.
+   *          по выбранному полю (по умолчанию `date` desc); категория вложена;
+   *          `amount` — число, даты — ISO-строки.
    *
    * @throws `BadRequestException` — инвалидные параметры (валидация DTO;
    *         в хендлер не попадают, но типы гарантируют диапазон).
@@ -52,11 +83,13 @@ export class GetTransactionsHandler
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
 
+    const orderBy = buildOrderBy(query.sortBy, query.sortOrder);
+
     const [rows, total] = await this.prisma.$transaction([
       this.prisma.transaction.findMany({
         where,
         include: { category: true },
-        orderBy: { date: 'desc' },
+        orderBy,
         skip: (page - 1) * limit,
         take: limit,
       }),

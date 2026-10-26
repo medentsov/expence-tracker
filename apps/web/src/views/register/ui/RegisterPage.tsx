@@ -1,22 +1,15 @@
 import { RegisterForm } from '@/features/auth-register';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/card';
 
 export function RegisterPage() {
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>Регистрация</CardTitle>
-        <CardDescription>Создайте аккаунт, чтобы начать вести учёт расходов.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <RegisterForm />
-      </CardContent>
-    </Card>
+    <div className="flex w-full flex-col gap-6">
+      <div className="flex flex-col gap-1.5">
+        <h1 className="font-display text-2xl font-bold tracking-tight lg:text-3xl">Регистрация</h1>
+        <p className="text-sm text-muted-foreground">
+          Создайте аккаунт, чтобы начать вести учёт расходов.
+        </p>
+      </div>
+      <RegisterForm />
+    </div>
   );
 }
