@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { todayInputDate } from '@/shared/lib/date';
+import { dateToInputDate, todayInputDate } from '@/shared/lib/date';
+import type { EditableTransaction } from './types';
 
 // Схема формы создания транзакции (правила зеркалят CreateTransactionDto).
 // Сумма вводится строкой и проверяется на положительное число.
@@ -24,5 +25,16 @@ export function createEmptyValues(): CreateTransactionFormValues {
     description: '',
     date: todayInputDate(),
     categoryId: '',
+  };
+}
+
+// Значения формы для существующей транзакции (режим редактирования).
+export function toFormValues(transaction: EditableTransaction): CreateTransactionFormValues {
+  return {
+    amount: String(transaction.amount),
+    type: transaction.type,
+    description: transaction.description ?? '',
+    date: dateToInputDate(transaction.date),
+    categoryId: transaction.categoryId,
   };
 }
