@@ -13,8 +13,8 @@
 		"typecheck": "turbo run typecheck",
 		"format": "turbo run format",
 		"format:check": "turbo run format:check",
-		"format:root": "prettier --write \"*.{ts,js,json,md,css}\" \".claude/**/*.md\"",
-		"format:check:root": "prettier --check \"*.{ts,js,json,md,css}\" \".claude/**/*.md\""
+		"format:root": "prettier --write \"*.{ts,js,json,yml,yaml,md,css}\" \".claude/**/*.md\" .prettierrc",
+		"format:check:root": "prettier --check \"*.{ts,js,json,yml,yaml,md,css}\" \".claude/**/*.md\" .prettierrc"
 	},
 	"devDependencies": {
 		"eslint": "^9.0.0",
