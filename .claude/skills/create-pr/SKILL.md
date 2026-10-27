@@ -9,65 +9,35 @@ allowed-tools:
 ---
 
 # PR Skill
-
 Создай Pull Request на GitHub, соблюдая соглашения проекта.
 
 ## Аргументы
 - $0 — название PR
 - $1 — целевая ветка
 
-## Алгоритм выполнения
+## Подготовка
+1. Проверь что ветка готова:
+   !`bash ${CLAUDE_SKILL_DIR}/scripts/validate.sh`
+2. Получи diff от базовой ветки:
+   !`git diff ${ARGUMENTS:-main}..HEAD`
+3. Получи список коммитов:
+   !`git log ${ARGUMENTS:-main}..HEAD --oneline`
 
-1. Выполни (`git branch --show-current`)
+## Задача
+Используя данные выше — заполни шаблон
+из [template.md](template.md).
+Посмотри пример хорошего PR:
+[examples/good-pr.md](examples/good-pr.md)
 
-2. Убедись, что ветка запушена на remote:
-
-```bash
-git status -sb
-```
-
-- Если нет upstream — запушь: `git push -u origin $1`
-
-3. Получи список коммитов от `main` до HEAD:
-
-```bash
-git log main..HEAD --oneline
-```
-
-4. Получи полный diff:
-
-```bash
-git diff main..HEAD --stat
-```
-
-5. На основе коммитов и diff составь тело PR:
-
-    - **Summary**: 2–4 пункта — что реализовано/исправлено (суть, не файлы)
-
-    - **Changes**: затронутые модули/эндпоинты (если есть)
-
-    - **Test plan**: краткий чеклист шагов для проверки
-
-6. Создай PR командой:
-
-```bash
-gh pr create --title "$0" --base main --head $1 --body "$(cat <<'EOF'
-## Итог
-- ...
-
-## Изменения
-- ...
-
-## План тестирования
-- [ ] ...
-
-EOF
-)"
-```
+## Создание PR
+Создай PR командой:
+gh pr create \
+  --title "$0 или сгенерированный title" \
+  --body "заполненный шаблон" \
+  --base "${ARGUMENTS:-main}"
 
 ## Правила
+- Заголовок по conventional commits
+- Если ветка не запушена:
+  git push --set-upstream origin HEAD
 
-- Title если не передан строго по Conventional Commits: `type(scope): описание на русском`
-- **Не мержи** PR автоматически
-- **Не удаляй** ветку до явной просьбы пользователя
-- Если PR для этой ветки уже существует — сообщи об этом и выведи ссылку на существующий PR (`gh pr view <branch>`)
