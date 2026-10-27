@@ -18,15 +18,26 @@ npm run dev                                   # 7. web:3000 + api:3001
 
 ## Типовые команды
 
-| Задача | Команда |
-|--------|---------|
-| Запустить всё | `npm run dev` |
-| Только API / web | `npm run dev -w @tracker/api` / `npm run dev -w @tracker/web` |
-| Сборка / линт / типы | `npm run build` / `npm run lint` / `npm run typecheck` |
-| Форматирование | `npm run format` |
-| Prisma generate/migrate/studio | `npm run prisma:* -w @tracker/api` |
+| Задача                         | Команда                                                       |
+| ------------------------------ | ------------------------------------------------------------- |
+| Запустить всё                  | `npm run dev`                                                 |
+| Только API / web               | `npm run dev -w @tracker/api` / `npm run dev -w @tracker/web` |
+| Сборка / линт / типы           | `npm run build` / `npm run lint` / `npm run typecheck`        |
+| Форматирование                 | `npm run format`                                              |
+| Проверка формата (CI)          | `npm run format:check`                                        |
+| Prisma generate/migrate/studio | `npm run prisma:* -w @tracker/api`                            |
 
 > У скриптов разные тела: в API `lint` = `eslint "src/**/*.{ts,tsx}"`, в web `lint` = `next lint` (не eslint напрямую).
+
+### Prettier
+
+Единый конфиг — корневой `.prettierrc` (воркспейсы наследуют его автоматически). Игнор — корневой `.prettierignore`.
+
+- `npm run format` / `npm run format:check` — `turbo run format` по всем воркспейсам.
+- `npm run format:root` / `npm run format:check:root` — файлы корня (`*.md`, `*.json`, `*.js`) и `.claude/**/*.md`.
+- В воркспейсах скрипты вызывают Prettier с `--ignore-path ../../.prettierignore`: Prettier **не** поднимает `.prettierignore` вверх по дереву.
+
+**Почему не `prettier "**/*.md"` из корня:** рекурсивный обход спотыкается на `pgdata/` (создан Docker, владелец root) с `EACCES` и выходит с кодом 2, из-за чего проверка формата фактически не выполнялась. Поэтому корень покрыт явными глобами, а проекты — через turbo.
 
 ## Состояние системы и «что где»
 
@@ -39,14 +50,14 @@ npm run dev                                   # 7. web:3000 + api:3001
 1. **Модель** — дополнить `apps/api/prisma/schema.prisma`, затем `generate` + `migrate dev`.
 2. **Shared-тип** — добавить интерфейс в `packages/shared/src/types/`, экспортировать из `src/index.ts`. Тип должен **зеркалить** ответ API.
 3. **Модуль** — создать CQRS-модуль по образцу `categories`:
-   ```
-   <name>.module.ts
-   <name>.controller.ts
-   <name>-ownership.ts          # findOwned<Сущность>(prisma, userId, id) → 404 на чужое
-   commands/  # *.command.ts + handlers/*.handler.ts
-   queries/   # *.query.ts + handlers/*.handler.ts
-   dto/       # class-validator + Swagger-декораторы
-   ```
+    ```
+    <name>.module.ts
+    <name>.controller.ts
+    <name>-ownership.ts          # findOwned<Сущность>(prisma, userId, id) → 404 на чужое
+    commands/  # *.command.ts + handlers/*.handler.ts
+    queries/   # *.query.ts + handlers/*.handler.ts
+    dto/       # class-validator + Swagger-декораторы
+    ```
 4. **DTO** — входные/выходные классы с `@ApiProperty` и `class-validator`; для PATCH — `PartialType(CreateDto)`.
 5. **Зарегистрировать магистраль** — добавить модуль в `imports` `AppModule` (порядок: после `UsersModule`, до `AuthModule`).
 6. **Изоляция данных** — в хендлерах всегда `where: { userId }`; чужое → 404 через ownership-хелпер.
@@ -56,13 +67,13 @@ npm run dev                                   # 7. web:3000 + api:3001
 
 1. **Entity** (доступ к данным) — обёртка над `apiFetch` в `entities/<сущность>/api/*.ts`.
 2. **Feature** (действие/форма) — по образцу `auth-login`:
-   ```
-   index.ts                 # публичный API (UI-компонент)
-   api/<действие>.ts        # обёртка над entities/api
-   model/schema.ts          # zod-схема (зеркалит DTO бэкенда)
-   model/use-*.ts           # react-hook-form хук
-   ui/<Component>.tsx       # UI
-   ```
+    ```
+    index.ts                 # публичный API (UI-компонент)
+    api/<действие>.ts        # обёртка над entities/api
+    model/schema.ts          # zod-схема (зеркалит DTO бэкенда)
+    model/use-*.ts           # react-hook-form хук
+    ui/<Component>.tsx       # UI
+    ```
 3. **View** (страница) — тонкая обёртка над feature-композицией в `views/<name>/ui/<Name>Page.tsx`; `page.tsx` в `app/` — только `metadata` + view.
 4. **Импорты** — только «вниз»; типы из `@tracker/shared` — `import type`. Публичный API слайса — через `index.ts`.
 5. **Авторизация** — токен из `getToken()` передаётся явно в `apiFetch` (слой `shared`/`entities` не знает про хранилище).
@@ -81,11 +92,11 @@ npm run dev                                   # 7. web:3000 + api:3001
 
 ### Преобразование типов (БД → API)
 
-| Prisma | Shared/API | Как |
-|--------|------------|-----|
-| `Decimal(12,2)` | `number` | `Number(row.amount)` |
-| `DateTime` | ISO-строка | `.toISOString()` |
-| `passwordHash` | — | `UsersService.toPublicUser()` |
+| Prisma          | Shared/API | Как                           |
+| --------------- | ---------- | ----------------------------- |
+| `Decimal(12,2)` | `number`   | `Number(row.amount)`          |
+| `DateTime`      | ISO-строка | `.toISOString()`              |
+| `passwordHash`  | —          | `UsersService.toPublicUser()` |
 
 ### Единая валюта и legacy
 
@@ -102,16 +113,16 @@ npm run dev                                   # 7. web:3000 + api:3001
 
 ## Диагностика типовых проблем
 
-| Симптом | Причина / решение |
-|---------|-------------------|
-| API не поднялся на старте | Нет `JWT_SECRET` (`JwtModule.registerAsync` fail-fast) или БД недоступна. Проверьте `apps/api/.env` |
-| `401 Требуется авторизация` | Не передан заголовок `Authorization: Bearer <token>` |
-| `401 Недействительный токен` | Токен протух (`JWT_EXPIRES_IN`) или подписан другим `JWT_SECRET` |
-| `404` при обращении к своей записи | Либо id не тот UUID, либо запись чужая (намеренно неразличимо) — сверьте `user.id` |
-| `409` при регистрации | Email уже занят (или гонка регистрации — `P2002`) |
-| `400` со списком в `message` | Ошибки валидации class-validator; смотрите перечисленные поля |
-| CORS-ошибка на фронте | `origin` в `main.ts` разрешает только `http://localhost:3000` — добавьте свой домен |
-| СЕТЕВАЯ ошибка `status 0` во фронте | API недоступен; `apiFetch` не разлогинивает пользователя при временном сбое |
+| Симптом                             | Причина / решение                                                                                   |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- |
+| API не поднялся на старте           | Нет `JWT_SECRET` (`JwtModule.registerAsync` fail-fast) или БД недоступна. Проверьте `apps/api/.env` |
+| `401 Требуется авторизация`         | Не передан заголовок `Authorization: Bearer <token>`                                                |
+| `401 Недействительный токен`        | Токен протух (`JWT_EXPIRES_IN`) или подписан другим `JWT_SECRET`                                    |
+| `404` при обращении к своей записи  | Либо id не тот UUID, либо запись чужая (намеренно неразличимо) — сверьте `user.id`                  |
+| `409` при регистрации               | Email уже занят (или гонка регистрации — `P2002`)                                                   |
+| `400` со списком в `message`        | Ошибки валидации class-validator; смотрите перечисленные поля                                       |
+| CORS-ошибка на фронте               | `origin` в `main.ts` разрешает только `http://localhost:3000` — добавьте свой домен                 |
+| СЕТЕВАЯ ошибка `status 0` во фронте | API недоступен; `apiFetch` не разлогинивает пользователя при временном сбое                         |
 
 ## Когда что читать
 

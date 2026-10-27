@@ -9,9 +9,11 @@ npm run dev -w @tracker/web      # next dev (порт 3000)
 npm run build -w @tracker/web    # next build
 npm run typecheck -w @tracker/web
 npm run lint -w @tracker/web     # next lint (НЕ eslint напрямую)
+npm run format -w @tracker/web   # prettier --write (наследует ../../.prettierrc)
+npm run format:check -w @tracker/web
 ```
 
-Линта `format` в воркспейсе нет — форматирование только из корня (`npm run format`).
+Форматирование настроено и в корне (`npm run format` → `turbo run format` по всем воркспейсам), и в самом воркспейсе. Конфиг — единый корневой `/.prettierrc`; скрипты воркспейсов явно указывают `--ignore-path ../../.prettierignore`, потому что Prettier не поднимает `.prettierignore` вверх по дереву (в отличие от `.prettierrc`).
 
 ## Конфигурация
 
@@ -78,6 +80,7 @@ shared/     → инфраструктура (api, config, lib, ui)
 ## Паттерн feature-слайса
 
 Эталон — `features/auth-login`:
+
 ```
 index.ts                      # публичный API (обычно только UI-компонент)
 api/<действие>.ts             # обёртка над entities/api или apiFetch
@@ -93,6 +96,7 @@ ui/<Component>.tsx            # UI-компонент
 ## Паттерн entity-слайса
 
 Эталон — `entities/session`:
+
 ```
 index.ts                      # SessionProvider, useSession, getToken, типы
 api/get-me.ts                 # тонкая обёртка над apiFetch

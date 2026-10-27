@@ -1,24 +1,27 @@
 {
-  "name": "expence-tracker",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "typecheck": "turbo run typecheck",
-    "format": "prettier --write \"**/*.{ts,tsx,json,md,css}\""
-  },
-  "devDependencies": {
-    "eslint": "^9.0.0",
-    "prettier": "^3.0.0",
-    "turbo": "^2.0.0",
-    "typescript": "^5.5.0",
-    "typescript-eslint": "^8.71.1"
-  },
-  "packageManager": "npm@10.0.0"
+	"name": "expence-tracker",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "turbo run dev",
+		"build": "turbo run build",
+		"lint": "turbo run lint",
+		"test": "turbo run test",
+		"typecheck": "turbo run typecheck",
+		"format": "turbo run format",
+		"format:check": "turbo run format:check",
+		"format:root": "prettier --write \"*.{ts,js,json,md,css}\" \".claude/**/*.md\"",
+		"format:check:root": "prettier --check \"*.{ts,js,json,md,css}\" \".claude/**/*.md\""
+	},
+	"devDependencies": {
+		"eslint": "^9.0.0",
+		"prettier": "^3.0.0",
+		"turbo": "^2.0.0",
+		"typescript": "^5.5.0",
+		"typescript-eslint": "^8.71.1"
+	},
+	"packageManager": "npm@10.0.0"
 }
