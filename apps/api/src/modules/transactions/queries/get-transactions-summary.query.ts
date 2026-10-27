@@ -10,9 +10,9 @@ import { IQuery } from '@nestjs/cqrs';
  * @param year   Год (≥2000).
  */
 export class GetTransactionsSummaryQuery implements IQuery {
-  constructor(
-    public readonly userId: string,
-    public readonly month: number,
-    public readonly year: number,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly month: number,
+		public readonly year: number,
+	) {}
 }

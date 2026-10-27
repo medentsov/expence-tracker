@@ -9,13 +9,16 @@ allowed-tools:
 ---
 
 # PR Skill
+
 Создай Pull Request на GitHub, соблюдая соглашения проекта.
 
 ## Аргументы
+
 - $0 — название PR
 - $1 — целевая ветка
 
 ## Подготовка
+
 1. Проверь что ветка готова:
    !`bash ${CLAUDE_SKILL_DIR}/scripts/validate.sh`
 2. Получи diff от базовой ветки:
@@ -24,20 +27,22 @@ allowed-tools:
    !`git log ${ARGUMENTS:-main}..HEAD --oneline`
 
 ## Задача
+
 Используя данные выше — заполни шаблон
 из [template.md](template.md).
 Посмотри пример хорошего PR:
 [examples/good-pr.md](examples/good-pr.md)
 
 ## Создание PR
+
 Создай PR командой:
 gh pr create \
-  --title "$0 или сгенерированный title" \
-  --body "заполненный шаблон" \
-  --base "${ARGUMENTS:-main}"
+--title "$0 или сгенерированный title" \
+--body "заполненный шаблон" \
+--base "${ARGUMENTS:-main}"
 
 ## Правила
+
 - Заголовок по conventional commits
 - Если ветка не запушена:
   git push --set-upstream origin HEAD
-

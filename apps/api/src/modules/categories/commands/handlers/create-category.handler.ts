@@ -10,23 +10,23 @@ import { CreateCategoryCommand } from '../create-category.command';
  */
 @CommandHandler(CreateCategoryCommand)
 export class CreateCategoryHandler implements ICommandHandler<CreateCategoryCommand, Category> {
-  constructor(private readonly prisma: PrismaService) {}
+	constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Выполняет создание категории.
-   *
-   * @param command Команда (`CreateCategoryCommand`) с `userId`, `name`, `icon?`, `color?`.
-   *
-   * @returns Созданную категорию `Category`.
-   */
-  execute(command: CreateCategoryCommand): Promise<Category> {
-    return this.prisma.category.create({
-      data: {
-        name: command.name,
-        icon: command.icon,
-        color: command.color,
-        userId: command.userId,
-      },
-    });
-  }
+	/**
+	 * Выполняет создание категории.
+	 *
+	 * @param command Команда (`CreateCategoryCommand`) с `userId`, `name`, `icon?`, `color?`.
+	 *
+	 * @returns Созданную категорию `Category`.
+	 */
+	execute(command: CreateCategoryCommand): Promise<Category> {
+		return this.prisma.category.create({
+			data: {
+				name: command.name,
+				icon: command.icon,
+				color: command.color,
+				userId: command.userId,
+			},
+		});
+	}
 }

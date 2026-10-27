@@ -11,32 +11,30 @@ import { GetUserByEmailQuery } from '../get-user-by-email.query';
  * чтобы `User` не протекал в другие модули.
  */
 @QueryHandler(GetUserByEmailQuery)
-export class GetUserByEmailHandler
-  implements IQueryHandler<GetUserByEmailQuery, UserCredentials | null>
-{
-  constructor(private readonly usersService: UsersService) {}
+export class GetUserByEmailHandler implements IQueryHandler<GetUserByEmailQuery, UserCredentials | null> {
+	constructor(private readonly usersService: UsersService) {}
 
-  /**
-   * Выполняет получение учётных данных.
-   *
-   * @param query Запрос (`GetUserByEmailQuery`) с `email`.
-   *
-   * @returns `UserCredentials` (вкл. `passwordHash`, даты `Date`) или `null`,
-   *          если пользователь не найден.
-   */
-  async execute(query: GetUserByEmailQuery): Promise<UserCredentials | null> {
-    const user = await this.usersService.findByEmail(query.email);
-    if (!user) {
-      return null;
-    }
+	/**
+	 * Выполняет получение учётных данных.
+	 *
+	 * @param query Запрос (`GetUserByEmailQuery`) с `email`.
+	 *
+	 * @returns `UserCredentials` (вкл. `passwordHash`, даты `Date`) или `null`,
+	 *          если пользователь не найден.
+	 */
+	async execute(query: GetUserByEmailQuery): Promise<UserCredentials | null> {
+		const user = await this.usersService.findByEmail(query.email);
+		if (!user) {
+			return null;
+		}
 
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      passwordHash: user.passwordHash,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
-  }
+		return {
+			id: user.id,
+			email: user.email,
+			name: user.name,
+			passwordHash: user.passwordHash,
+			createdAt: user.createdAt,
+			updatedAt: user.updatedAt,
+		};
+	}
 }

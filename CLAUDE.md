@@ -1,7 +1,9 @@
 # CLAUDE.md
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Проект
+
 Монорепозиторий **трекера личных расходов**. npm workspaces + Turborepo.
 
 - **Фронтенд** `apps/web` — Next.js (App Router, TypeScript), имя пакета `@tracker/web`.
@@ -10,6 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **БД** — PostgreSQL через Prisma; локальный запуск в Docker Compose (`docker-compose.yml`, порт 5432).
 
 ## Типовые команды
+
 Зависимости устанавливаются один раз из корня (npm workspaces):
 
 ```bash
@@ -30,11 +33,13 @@ npm run build
 npm run lint
 npm run typecheck
 
-# Форматирование
-npm run format
+# Форматирование (prettier, конфиг — корневой .prettierrc)
+npm run format            # записать (turbo по воркспейсам + root-файлы)
+npm run format:check      # проверка без записи
 ```
 
 ### Внутри воркспейса `apps/api` (Prisma)
+
 ```bash
 npx prisma generate     # сгенерировать Prisma Client после изменения schema.prisma
 npx prisma migrate dev  # создать/применить миграции
@@ -46,6 +51,7 @@ npx prisma studio       # UI для просмотра данных
 ## Архитектура
 
 ### Поток данных
+
 ```
 Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──►  PostgreSQL (Docker)
         │                              │
@@ -53,20 +59,24 @@ Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──�
 ```
 
 Специфика каждого воркспейса — во вложенных `CLAUDE.md`:
+
 - **[`apps/api/CLAUDE.md`](apps/api/CLAUDE.md)** — bootstrap, CQRS-модули, Prisma, ownership-проверки, JWT, пагинация, DTO.
 - **[`apps/web/CLAUDE.md`](apps/web/CLAUDE.md)** — FSD-слои, роуты, `apiFetch`, shadcn/Tailwind v4, паттерны feature/entity-слайсов, сессия.
 
 ### Общий код (`packages/shared`)
+
 - Точка входа `src/index.ts`; типы в `src/types/` (`category.ts`, `expense.ts`, `transaction.ts`, `currency.ts`, `user.ts`, `pagination.ts` с `Paginated<T>`).
 - Импортируется как `@tracker/shared`. Типы — интерфейсы, зеркалящие ответы API. Держать в синхронизации с DTO бэкенда (`apps/api/src/modules/*/dto`).
 
 ## Важные соглашения
+
 - **Скрипты бэкенда/фронта** различаются: у API `lint` = `eslint "src/**/*.{ts,tsx}"`, у web `lint` = `next lint`.
 - **Единая валюта** — `RUB` по умолчанию; поддерживаются `RUB | USD | EUR` (`CurrencyCode` в `packages/shared`).
 - **CORS** в `main.ts` разрешает только `http://localhost:3000` — при развёртывании добавить домен фронта.
 - `tsconfig.base.json` в корне — общий strict-конфиг; воркспейсы его расширяют (web — bundler, api — commonjs/node).
 
 ## Окружение и git
+
 - `node_modules/`, `.next/`, `dist/`, `pgdata/` — в `.gitignore` (не коммитятся). `pgdata/` создаёт Docker (владелец root) — ручками не трогать.
 - `package-lock.json` — коммитить (он не игнорируется).
 - `apps/api/.env` — локальный, создаётся из `apps/api/.env.example` и в git не попадает (`DATABASE_URL`, `PORT`). Внешние переменные окружения брать из него, а не зашивать в код.
@@ -75,4 +85,5 @@ Next.js (apps/web)  ──REST──►  NestJS (apps/api)  ──Prisma──�
 - **Коммиты, ветки и PR (GitHub Flow)** — по skill `/commit-to-branch`: все правила вынесены туда (создание ветки от свежего `main`, атомарные коммиты по Conventional Commits, атрибуция `Co-Authored-By`, создание PR). Коммитить и открывать PR **только по явному запросу** пользователя.
 
 ## Обновление docs
+
 При добавлении функционала, проверяй документацию в @.claude/docs/ и актуализируй

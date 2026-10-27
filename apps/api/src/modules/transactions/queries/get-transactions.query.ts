@@ -18,15 +18,15 @@ import type { TransactionSortField, TransactionSortOrder } from '../dto/get-tran
  * @param sortOrder  Направление сортировки (по умолчанию `desc`).
  */
 export class GetTransactionsQuery implements IQuery {
-  constructor(
-    public readonly userId: string,
-    public readonly dateFrom?: string,
-    public readonly dateTo?: string,
-    public readonly type?: TransactionType,
-    public readonly categoryId?: string,
-    public readonly page?: number,
-    public readonly limit?: number,
-    public readonly sortBy?: TransactionSortField,
-    public readonly sortOrder?: TransactionSortOrder,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly dateFrom?: string,
+		public readonly dateTo?: string,
+		public readonly type?: TransactionType,
+		public readonly categoryId?: string,
+		public readonly page?: number,
+		public readonly limit?: number,
+		public readonly sortBy?: TransactionSortField,
+		public readonly sortOrder?: TransactionSortOrder,
+	) {}
 }

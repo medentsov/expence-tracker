@@ -22,16 +22,16 @@ export type TransactionWithCategory = Prisma.TransactionGetPayload<{ include: { 
  *         другому пользователю (одинаковый 404, без раскрытия её существования).
  */
 export async function findOwnedTransaction(
-  prisma: PrismaService,
-  userId: string,
-  id: string,
+	prisma: PrismaService,
+	userId: string,
+	id: string,
 ): Promise<TransactionWithCategory> {
-  const transaction = await prisma.transaction.findUnique({
-    where: { id },
-    include: { category: true },
-  });
-  if (!transaction || transaction.userId !== userId) {
-    throw new NotFoundException(`Транзакция ${id} не найдена`);
-  }
-  return transaction;
+	const transaction = await prisma.transaction.findUnique({
+		where: { id },
+		include: { category: true },
+	});
+	if (!transaction || transaction.userId !== userId) {
+		throw new NotFoundException(`Транзакция ${id} не найдена`);
+	}
+	return transaction;
 }

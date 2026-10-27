@@ -18,15 +18,15 @@ import { UsersModule } from './modules/users/users.module';
  * Зависимости: `@nestjs/cqrs`, `@nestjs/core`, Prisma, все feature-модули.
  */
 @Module({
-  imports: [
-    // CqrsModule.forRoot() регистрирует шины (CommandBus/QueryBus/EventBus) глобально.
-    CqrsModule.forRoot(),
-    PrismaModule,
-    UsersModule,
-    CategoriesModule,
-    ExpensesModule,
-    TransactionsModule,
-    AuthModule,
-  ],
+	imports: [
+		// CqrsModule.forRoot() регистрирует шины (CommandBus/QueryBus/EventBus) глобально.
+		CqrsModule.forRoot(),
+		PrismaModule,
+		UsersModule,
+		CategoriesModule,
+		ExpensesModule,
+		TransactionsModule,
+		AuthModule,
+	],
 })
 export class AppModule {}

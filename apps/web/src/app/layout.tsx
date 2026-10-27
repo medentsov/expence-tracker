@@ -10,35 +10,35 @@ import './globals.css';
 // subsets 'cyrillic' обязателен: интерфейс полностью на русском,
 // без него браузер подставит системный fallback прямо посреди текста.
 const manrope = Manrope({
-  subsets: ['latin', 'cyrillic'],
-  weight: ['500', '600', '700'],
-  variable: '--font-manrope',
-  display: 'swap',
+	subsets: ['latin', 'cyrillic'],
+	weight: ['500', '600', '700'],
+	variable: '--font-manrope',
+	display: 'swap',
 });
 
 const inter = Inter({
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-inter',
-  display: 'swap',
+	subsets: ['latin', 'cyrillic'],
+	variable: '--font-inter',
+	display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Трекер расходов',
-  description: 'Трекер личных расходов',
+	title: 'Трекер расходов',
+	description: 'Трекер личных расходов',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
-  return (
-    // suppressHydrationWarning — next-themes выставляет класс темы до гидрации.
-    <html lang="ru" suppressHydrationWarning className={`${manrope.variable} ${inter.variable}`}>
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
-          <SessionProvider>
-            {children}
-            <Toaster />
-          </SessionProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+	return (
+		// suppressHydrationWarning — next-themes выставляет класс темы до гидрации.
+		<html lang="ru" suppressHydrationWarning className={`${manrope.variable} ${inter.variable}`}>
+			<body>
+				<ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+					<SessionProvider>
+						{children}
+						<Toaster />
+					</SessionProvider>
+				</ThemeProvider>
+			</body>
+		</html>
+	);
 }

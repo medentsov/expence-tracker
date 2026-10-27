@@ -4,19 +4,19 @@
 const tseslint = require('typescript-eslint');
 
 module.exports = tseslint.config(
-  {
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/build/**',
-      '**/.next/**',
-      '**/out/**',
-      '**/coverage/**',
-      '**/pgdata/**',
-    ],
-  },
-  {
-    files: ['apps/api/**/*.ts', 'packages/shared/**/*.ts'],
-    extends: [...tseslint.configs.recommended],
-  },
+	{
+		ignores: [
+			'**/node_modules/**',
+			'**/dist/**',
+			'**/build/**',
+			'**/.next/**',
+			'**/out/**',
+			'**/coverage/**',
+			'**/pgdata/**',
+		],
+	},
+	{
+		files: ['apps/api/**/*.ts', 'packages/shared/**/*.ts'],
+		extends: [...tseslint.configs.recommended],
+	},
 );

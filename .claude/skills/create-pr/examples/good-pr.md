@@ -25,12 +25,12 @@ feat(transactions): add summary endpoint by category
 4. Ожидаемый ответ:
    \`\`\`json
    [
-     {
-       "categoryId": "uuid",
-       "categoryName": "Продукты",
-       "totalIncome": 0,
-       "totalExpense": 15000
-     }
+   {
+   "categoryId": "uuid",
+   "categoryName": "Продукты",
+   "totalIncome": 0,
+   "totalExpense": 15000
+   }
    ]
    \`\`\`
 

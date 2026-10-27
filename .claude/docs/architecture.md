@@ -32,13 +32,13 @@ HTTP → Controller → ValidationPipe (DTO) → CommandBus/QueryBus → Handler
 
 ### Ключевые механизмы
 
-| Механизм | Где | Назначение |
-|----------|-----|-----------|
-| `CommandBus` | `CqrsModule.forRoot()` в `AppModule` | Команды-мутации (`Create*`, `Update*`, `Delete*`, `Login`, `Register`) |
-| `QueryBus` | там же | Запросы-чтения (`Get*`, списки, сводка) |
-| `EventBus` | там же | События-побочные эффекты (`UserRegisteredEvent`) |
-| `PrismaModule` (`@Global`) | `src/prisma/` | Глобальный `PrismaService` — доступен любому хендлеру без явного импорта |
-| `JwtAuthGuard` (`APP_GUARD`) | `auth` | Глобально защищает все роуты; `@Public()` пропускает эндпоинт |
+| Механизм                     | Где                                  | Назначение                                                               |
+| ---------------------------- | ------------------------------------ | ------------------------------------------------------------------------ |
+| `CommandBus`                 | `CqrsModule.forRoot()` в `AppModule` | Команды-мутации (`Create*`, `Update*`, `Delete*`, `Login`, `Register`)   |
+| `QueryBus`                   | там же                               | Запросы-чтения (`Get*`, списки, сводка)                                  |
+| `EventBus`                   | там же                               | События-побочные эффекты (`UserRegisteredEvent`)                         |
+| `PrismaModule` (`@Global`)   | `src/prisma/`                        | Глобальный `PrismaService` — доступен любому хендлеру без явного импорта |
+| `JwtAuthGuard` (`APP_GUARD`) | `auth`                               | Глобально защищает все роуты; `@Public()` пропускает эндпоинт            |
 
 Шины зарегистрированы глобально один раз в корне; модули общаются **только через шины**, без прямых импортов друг друга. Хендлеры находятся глобально через `ExplorerService`, поэтому модуль-владелец данных сам решает, как обрабатывать команду/запрос.
 
@@ -52,13 +52,13 @@ CqrsModule.forRoot() → PrismaModule → UsersModule → CategoriesModule → E
 
 ### Модули
 
-| Модуль | Роль | Контроллер | Комментарий |
-|--------|------|-----------|-------------|
-| `users` | Владелец данных о пользователях | нет | Наружу ничего не экспортирует — взаимодействие только через шины. Единственная точка «вычищения» `passwordHash` |
-| `auth` | Регистрация/вход, JWT | `AuthController` | Структура отличается: `decorators/`, `guards/`, `interfaces/`, `services/` |
-| `categories` | CRUD категорий | `CategoriesController` | Образцовый CQRS-модуль данных |
-| `transactions` | Доходы/расходы + сводка + пагинация | `TransactionsController` | Основной модуль учёта |
-| `expenses` | Расходы (legacy) | `ExpensesController` | Создан раньше `transactions`; новый код вести через `transactions` |
+| Модуль         | Роль                                | Контроллер               | Комментарий                                                                                                     |
+| -------------- | ----------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `users`        | Владелец данных о пользователях     | нет                      | Наружу ничего не экспортирует — взаимодействие только через шины. Единственная точка «вычищения» `passwordHash` |
+| `auth`         | Регистрация/вход, JWT               | `AuthController`         | Структура отличается: `decorators/`, `guards/`, `interfaces/`, `services/`                                      |
+| `categories`   | CRUD категорий                      | `CategoriesController`   | Образцовый CQRS-модуль данных                                                                                   |
+| `transactions` | Доходы/расходы + сводка + пагинация | `TransactionsController` | Основной модуль учёта                                                                                           |
+| `expenses`     | Расходы (legacy)                    | `ExpensesController`     | Создан раньше `transactions`; новый код вести через `transactions`                                              |
 
 ### Типовая структура CQRS-модуля
 
@@ -153,11 +153,11 @@ model/types.ts            # типы
 
 ### Соглашение о представлении данных
 
-| Тип в Prisma | Тип в API/shared | Кто приводит |
-|--------------|------------------|--------------|
-| `Decimal(12,2)` | `number` | хендлер (`Number(row.amount)`) |
-| `DateTime` | ISO-строка | хендлер (`.toISOString()`) либо сериализация |
-| `passwordHash` | отсутствует в ответах | `UsersService.toPublicUser()` |
+| Тип в Prisma    | Тип в API/shared      | Кто приводит                                 |
+| --------------- | --------------------- | -------------------------------------------- |
+| `Decimal(12,2)` | `number`              | хендлер (`Number(row.amount)`)               |
+| `DateTime`      | ISO-строка            | хендлер (`.toISOString()`) либо сериализация |
+| `passwordHash`  | отсутствует в ответах | `UsersService.toPublicUser()`                |
 
 ## Конфигурация и окружение
 

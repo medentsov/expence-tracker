@@ -10,8 +10,8 @@ import { ICommand } from '@nestjs/cqrs';
  * @param id     UUID транзакции.
  */
 export class DeleteTransactionCommand implements ICommand {
-  constructor(
-    public readonly userId: string,
-    public readonly id: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly id: string,
+	) {}
 }

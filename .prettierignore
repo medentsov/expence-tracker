@@ -1,0 +1,28 @@
+# Зависимости
+node_modules/
+.pnpm-store/
+
+# Сборки и кэш
+dist/
+build/
+.next/
+out/
+coverage/
+.turbo/
+
+# Docker-том PostgreSQL (владелец root)
+pgdata/
+
+# Сгенерированное Prisma
+apps/api/src/generated/
+apps/api/prisma/migrations/
+
+# Lock-файлы
+package-lock.json
+
+# Логи и ОС
+*.log
+.DS_Store
+
+# Локальная память Claude Code (в git не попадает)
+.claude/memory/

@@ -34,28 +34,28 @@
 для текста: в референсе неактивный текст `#B0AEB1` — это подписи/неактивная навигация,
 а не основной контент.
 
-| Роль | Светлая | Тёмная | Где |
-|---|---|---|---|
-| `--background` (шелл) | `#F6F4F4` | `#0E0D16` | фон приложения, сайдбар |
-| `--surface` (панель) | `#FFFFFF` | `#17151F` | белая панель контента, карточки |
-| `--card` | `#FFFFFF` | `#1B1926` | карточки внутри панели |
-| `--foreground` | `#13111F` | `#F4F2F8` | заголовки, суммы |
-| `--muted-foreground` | `#6F6B76` | `#A7A3B4` | вторичный текст, подписи |
-| `--ink-soft` | `#B0AEB1` | `#6E6A7A` | неактивный пункт навигации |
-| `--border` | `#ECE9EA` | `rgba(255,255,255,.08)` | разделители, рамки |
-| `--input` (пилюля) | `#F6F6F6` | `#221F2E` | поля ввода, поиск-подобные элементы |
-| `--secondary` | `#EDEDF0` | `#2A2738` | вторичная кнопка, hover |
-| `--primary` | `#13111F` | `#F4F2F8` | главная кнопка |
-| `--primary-foreground` | `#FFFFFF` | `#13111F` | текст на главной кнопке |
-| `--positive` (доход) | `#1F7A4D` | `#5DD69B` | суммы доходов, дельта |
-| `--negative` (расход) | `#B4472A` | `#FF9C7A` | суммы расходов |
-| `--tint-mint` | `#EBFDF0` | `#16281F` | KPI «Доходы» |
-| `--tint-sky` | `#E7EFFB` | `#17212F` | KPI «Баланс» |
-| `--tint-peach` | `#FFEFE8` | `#2A1E1B` | KPI «Расходы» |
-| `--ink-panel` | `#13111F` | `#211E2E` | тёмная акцентная панель |
-| `--ink-panel-foreground` | `#F4F2F6` | `#F4F2F6` | текст на тёмной панели |
-| `--ink-panel-muted` | `#9C98A8` | `#9C98A8` | подписи на тёмной панели |
-| `--ink-panel-row` | `#423F46` | `#35313F` | выделенная строка в тёмной панели |
+| Роль                     | Светлая   | Тёмная                  | Где                                 |
+| ------------------------ | --------- | ----------------------- | ----------------------------------- |
+| `--background` (шелл)    | `#F6F4F4` | `#0E0D16`               | фон приложения, сайдбар             |
+| `--surface` (панель)     | `#FFFFFF` | `#17151F`               | белая панель контента, карточки     |
+| `--card`                 | `#FFFFFF` | `#1B1926`               | карточки внутри панели              |
+| `--foreground`           | `#13111F` | `#F4F2F8`               | заголовки, суммы                    |
+| `--muted-foreground`     | `#6F6B76` | `#A7A3B4`               | вторичный текст, подписи            |
+| `--ink-soft`             | `#B0AEB1` | `#6E6A7A`               | неактивный пункт навигации          |
+| `--border`               | `#ECE9EA` | `rgba(255,255,255,.08)` | разделители, рамки                  |
+| `--input` (пилюля)       | `#F6F6F6` | `#221F2E`               | поля ввода, поиск-подобные элементы |
+| `--secondary`            | `#EDEDF0` | `#2A2738`               | вторичная кнопка, hover             |
+| `--primary`              | `#13111F` | `#F4F2F8`               | главная кнопка                      |
+| `--primary-foreground`   | `#FFFFFF` | `#13111F`               | текст на главной кнопке             |
+| `--positive` (доход)     | `#1F7A4D` | `#5DD69B`               | суммы доходов, дельта               |
+| `--negative` (расход)    | `#B4472A` | `#FF9C7A`               | суммы расходов                      |
+| `--tint-mint`            | `#EBFDF0` | `#16281F`               | KPI «Доходы»                        |
+| `--tint-sky`             | `#E7EFFB` | `#17212F`               | KPI «Баланс»                        |
+| `--tint-peach`           | `#FFEFE8` | `#2A1E1B`               | KPI «Расходы»                       |
+| `--ink-panel`            | `#13111F` | `#211E2E`               | тёмная акцентная панель             |
+| `--ink-panel-foreground` | `#F4F2F6` | `#F4F2F6`               | текст на тёмной панели              |
+| `--ink-panel-muted`      | `#9C98A8` | `#9C98A8`               | подписи на тёмной панели            |
+| `--ink-panel-row`        | `#423F46` | `#35313F`               | выделенная строка в тёмной панели   |
 
 HEX — для наглядности; в `globals.css` записываем в **OKLCH** (как сейчас в проекте), пересчитав
 через конвертер, чтобы сохранить единый формат файла.
@@ -74,14 +74,14 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
 
 Не забыть **`cyrillic`** — интерфейс полностью русский, без него браузер подставит fallback.
 
-| Токен | Шрифт | Размер / вес | Применение |
-|---|---|---|---|
-| `font-display` | Manrope | 28–32px / 700, tracking -0.02em | заголовки страниц |
-| `font-display` | Manrope | 30–34px / 700, `tabular-nums` | суммы KPI |
-| `font-display` | Manrope | 18–20px / 600 | заголовки карточек |
-| `font-sans` | Inter | 14px / 400–500 | основной текст, строки списка |
-| `font-sans` | Inter | 13px / 400 | подписи, метаданные |
-| `font-sans` | Inter | 12px / 500, tracking 0.02em | бейджи, заголовки колонок |
+| Токен          | Шрифт   | Размер / вес                    | Применение                    |
+| -------------- | ------- | ------------------------------- | ----------------------------- |
+| `font-display` | Manrope | 28–32px / 700, tracking -0.02em | заголовки страниц             |
+| `font-display` | Manrope | 30–34px / 700, `tabular-nums`   | суммы KPI                     |
+| `font-display` | Manrope | 18–20px / 600                   | заголовки карточек            |
+| `font-sans`    | Inter   | 14px / 400–500                  | основной текст, строки списка |
+| `font-sans`    | Inter   | 13px / 400                      | подписи, метаданные           |
+| `font-sans`    | Inter   | 12px / 500, tracking 0.02em     | бейджи, заголовки колонок     |
 
 `font-sans` — дефолт для `body`; `font-display` — только акценты. Все цифры денег —
 с `tabular-nums`, чтобы колонки сумм не «плясали».
@@ -143,10 +143,12 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
 Каждый шаг оставляет приложение собирающимся (`npm run typecheck -w @tracker/web`).
 
 ### Шаг 0. Ветка и сохранение плана
+
 - Скопировать этот файл в `.claude/plans/frontend-redesign.md` (конвенция проекта).
 - Ветка `feat/frontend-redesign` от свежего `main` (правила — skill `/commit-to-branch`).
 
 ### Шаг 1. Токены и шрифты
+
 - `apps/web/src/app/globals.css` — переписать `:root` и `.dark` на палитру выше (OKLCH),
   добавить семантические токены, радиусы `2xl/3xl`, `--shadow-card`; маппинг в `@theme inline`
   (`--color-surface`, `--color-positive`, `--color-tint-mint/sky/peach`, `--color-ink-panel*`,
@@ -158,7 +160,9 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
   light/dark/system, иконки `Sun`/`Moon`, `mounted`-guard от гидрации).
 
 ### Шаг 2. Базовые примитивы `shared/ui`
+
 Правки только в уже существующих файлах, новые компоненты — по минимуму:
+
 - `card.tsx` — `rounded-2xl border-border/70 bg-card p-6` без `shadow-sm`, убрать фиксированный `gap-6`.
 - `button.tsx` — `rounded-full` по умолчанию, `variant: default` → `bg-primary`, `outline` → `bg-secondary border-transparent`.
 - `input.tsx` / `select.tsx` — `rounded-xl bg-input border-transparent`, фокус через `ring-2 ring-ring/30`, без `shadow-xs`.
@@ -170,6 +174,7 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
 - Добавить через CLI `npx shadcn@latest add sheet` (мобильное меню).
 
 ### Шаг 3. App shell
+
 - Новый слайс `features/app-sidebar/` (`ui/AppSidebar.tsx`, `ui/MobileSidebar.tsx`, `index.ts`) —
   логотип, `NAV_ITEMS` (переносятся те же: `/dashboard`, `/transactions`, `/categories`), активный пункт
   как скруглённая пилюля на `bg-secondary`/`text-foreground`, неактивный — `text-ink-soft`;
@@ -183,6 +188,7 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
   удобнее — решить при реализации; дублировать навигацию нельзя).
 
 ### Шаг 4. Дашборд
+
 - `views/dashboard/ui/DashboardPage.tsx` — заголовок «Обзор» + подпись с месяцем, справа `CreateTransactionButton`.
 - `features/transactions-summary/ui/SummaryCards.tsx` → три `StatCard`: Доходы (`tint-mint`,
   иконка `TrendingUp` в чёрном скруглённом квадрате), Расходы (`tint-peach`, `TrendingDown`),
@@ -198,6 +204,7 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
 - Сетка: `grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]`.
 
 ### Шаг 5. Транзакции и категории
+
 - `views/transactions/ui/TransactionsPage.tsx` — из заглушки в рабочий экран: заголовок + `CreateTransactionButton`,
   полноширинная карточка со списком (`TransactionsList` + `useTransactions`), пагинация, панель фильтров.
 - `views/categories/ui/CategoriesPage.tsx` — сетка карточек категорий из `useCategories(true)`
@@ -210,11 +217,13 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
 фронт их не отправлял. Добавлено:
 
 **Entity** (`entities/transaction`)
+
 - `api/list-transactions.ts`: экспортируемый тип `TransactionsFilter` (те же 4 поля),
   `ListTransactionsParams extends TransactionsFilter`. Пустые значения в query не попадают.
 - `index.ts`: реэкспорт `TransactionsFilter`.
 
 **Feature** (новый слайс `features/transactions-filter`)
+
 - `ui/TransactionsFilterBar.tsx` — кнопка «Фильтры» (`aria-expanded`) раскрывает панель
   `rounded-2xl bg-input` с четырьмя полями: «С даты» / «По дату» (`type="date"`, взаимные
   `min`/`max`), «Тип» (Все / доходы / расходы), «Категория» (селект из справочника).
@@ -224,6 +233,7 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
 - `index.ts`: `TransactionsFilterBar`, `EMPTY_FILTER`, `countActiveFilters`, `toApiFilter`.
 
 **Хук** (`features/transactions-list/model/use-transactions.ts`)
+
 - Принимает `filter?: TransactionsFilter`, передаёт в `listTransactions`.
 - Стабильный `filterKey` через `useMemo(JSON.stringify(...))` — новая ссылка на объект
   не вызывает лишних запросов; смена фильтра сбрасывает страницу на 1.
@@ -237,6 +247,7 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
 **Вне скоупа**: поиск по тексту описания — такого параметра в API нет, потребует правки бэкенда.
 
 ### Шаг 6. Auth
+
 - `(auth)/layout.tsx` — шелл как в референсе: серый фон, по центру белая панель `rounded-3xl`;
   на десктопе — две колонки: слева тёмная брендовая панель «Трекер расходов» с коротким
   описанием, справа форма. На мобиле панель скрыта.
@@ -247,6 +258,7 @@ Inter({ subsets: ['latin','cyrillic'], variable: '--font-sans' })
 ---
 
 ### Шаг 7. Документация
+
 - `apps/web/CLAUDE.md` — обновить раздел `shared/ui` (новые примитивы, `sheet`),
   добавить описание токенов/шрифтов и слайса `features/app-sidebar`, убрать упоминания `app-header`.
 - `.claude/docs/architecture.md` (раздел «Слои фронтенда») — отразить шелл и новые слайсы.
@@ -264,6 +276,7 @@ npm run test -w @tracker/web          # vitest (существующий date.te
 ```
 
 Глазами (обязательно, оба режима):
+
 1. `docker compose up -d db && npm run dev` → `http://localhost:3000`.
 2. Войти тестовым пользователем → дашборд: KPI-карточки пастельные, суммы не «прыгают» при
    переключении страниц (`tabular-nums`), тёмная панель совпадает по цифрам с KPI

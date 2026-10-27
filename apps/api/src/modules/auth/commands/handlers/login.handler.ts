@@ -19,46 +19,46 @@ import { LoginCommand } from '../login.command';
  */
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand, AuthResponse> {
-  constructor(
-    private readonly queryBus: QueryBus,
-    private readonly tokenService: TokenService,
-  ) {}
+	constructor(
+		private readonly queryBus: QueryBus,
+		private readonly tokenService: TokenService,
+	) {}
 
-  /**
-   * Выполняет вход.
-   *
-   * @param command Команда (`LoginCommand`) с email и паролем.
-   *
-   * @returns `AuthResponse`: `{ accessToken, user }` (полный публичный профиль).
-   *
-   * @throws `UnauthorizedException` — «Неверный email или пароль» для отсутствующего
-   *         пользователя и неверного пароля (одинаково, чтобы не раскрывать наличие).
-   */
-  async execute(command: LoginCommand): Promise<AuthResponse> {
-    const credentials = await this.queryBus.execute<GetUserByEmailQuery, UserCredentials | null>(
-      new GetUserByEmailQuery(command.email),
-    );
+	/**
+	 * Выполняет вход.
+	 *
+	 * @param command Команда (`LoginCommand`) с email и паролем.
+	 *
+	 * @returns `AuthResponse`: `{ accessToken, user }` (полный публичный профиль).
+	 *
+	 * @throws `UnauthorizedException` — «Неверный email или пароль» для отсутствующего
+	 *         пользователя и неверного пароля (одинаково, чтобы не раскрывать наличие).
+	 */
+	async execute(command: LoginCommand): Promise<AuthResponse> {
+		const credentials = await this.queryBus.execute<GetUserByEmailQuery, UserCredentials | null>(
+			new GetUserByEmailQuery(command.email),
+		);
 
-    // Одинаковое сообщение для «нет пользователя» и «неверный пароль» — против перебора.
-    if (!credentials || !(await bcrypt.compare(command.password, credentials.passwordHash))) {
-      throw new UnauthorizedException('Неверный email или пароль');
-    }
+		// Одинаковое сообщение для «нет пользователя» и «неверный пароль» — против перебора.
+		if (!credentials || !(await bcrypt.compare(command.password, credentials.passwordHash))) {
+			throw new UnauthorizedException('Неверный email или пароль');
+		}
 
-    const accessToken = await this.tokenService.sign({
-      sub: credentials.id,
-      email: credentials.email,
-      name: credentials.name ?? undefined,
-    });
+		const accessToken = await this.tokenService.sign({
+			sub: credentials.id,
+			email: credentials.email,
+			name: credentials.name ?? undefined,
+		});
 
-    return {
-      accessToken,
-      user: {
-        id: credentials.id,
-        email: credentials.email,
-        name: credentials.name,
-        createdAt: credentials.createdAt.toISOString(),
-        updatedAt: credentials.updatedAt.toISOString(),
-      },
-    };
-  }
+		return {
+			accessToken,
+			user: {
+				id: credentials.id,
+				email: credentials.email,
+				name: credentials.name,
+				createdAt: credentials.createdAt.toISOString(),
+				updatedAt: credentials.updatedAt.toISOString(),
+			},
+		};
+	}
 }

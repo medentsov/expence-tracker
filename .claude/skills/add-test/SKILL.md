@@ -3,13 +3,13 @@ name: add-test
 description: Добавление юнит-теста на файл, переданный аргументом. Определяет воркспейс (apps/api → Jest, apps/web и packages/shared → Vitest), анализирует роль файла и пишет co-located тест по соглашениям проекта. Вызывать по запросу «добавь тест», «напиши тест», «покрой тестом», «сделай тест», «add test».
 argument-hint: [file-path]
 allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash(npm *)
-  - AskUserQuestion
+    - Read
+    - Write
+    - Edit
+    - Glob
+    - Grep
+    - Bash(npm *)
+    - AskUserQuestion
 ---
 
 # Добавление теста на файл
@@ -24,11 +24,11 @@ allowed-tools:
 
 ## 1. Определить воркспейс и фреймворк
 
-| Путь файла            | Воркспейс       | Фреймворк | Тест-раннер      |
-|-----------------------|-----------------|-----------|------------------|
-| `apps/api/src/**`     | `@tracker/api`  | Jest      | `ts-jest`        |
-| `apps/web/src/**`     | `@tracker/web`  | Vitest    | `vite` (натив. TS)|
-| `packages/shared/src/**` | `@tracker/shared` | Vitest | `vite` (натив. TS)|
+| Путь файла               | Воркспейс         | Фреймворк | Тест-раннер        |
+| ------------------------ | ----------------- | --------- | ------------------ |
+| `apps/api/src/**`        | `@tracker/api`    | Jest      | `ts-jest`          |
+| `apps/web/src/**`        | `@tracker/web`    | Vitest    | `vite` (натив. TS) |
+| `packages/shared/src/**` | `@tracker/shared` | Vitest    | `vite` (натив. TS) |
 
 Файл вне `src/**` (конфиги, `.md`, `schema.prisma`) — обычным юнит-тестом не покрывается: сообщи это и предложи альтернативу (например, e2e/сценарий), не пиши тест вслепую.
 
@@ -37,11 +37,13 @@ allowed-tools:
 Прочитай сам файл, а при необходимости — его соседей и импорты (`Grep`/`Read`), чтобы понять, **что именно** тестировать. Типовые случаи:
 
 ### apps/api (Jest + `@nestjs/testing` + `ts-jest`)
+
 - **CQRS-обработчик** (`commands|queries/handlers/*.handler.ts`) — юнит на `execute()`: замокать `PrismaService` и шину (`QueryBus`/`EventBus`), проверить вызовы и возврат/выброс. (см. `create-transaction.handler.ts` — мокается `prisma.transaction.create` и `queryBus.execute`.)
 - **Ownership-хелпер** (`*-ownership.ts`, `findOwned<Entity>`) — проверить: своя запись возвращается с вложенной категорией, чужая/отсутствующая → `NotFoundException` (404).
 - **DTO** (`dto/*.dto.ts`) — опционально: `class-validator` через `validate()` (валидные проходят, невалидные собирают ошибки).
 
 ### apps/web и packages/shared (Vitest)
+
 - **zod-схема** (`model/schema.ts`) — валидные/невалидные входы, `createEmptyValues()` (см. `transaction-create/model/schema.ts`).
 - **api-обёртка** (`entities|features/*/api/*.ts`) — замокать `apiFetch` (или `@/shared/api/client`), сверить URL и параметры (см. `entities/transaction/api/list-transactions.ts`).
 - **хранилище/модель с `localStorage`** (`model/storage.ts`) — запуск в `jsdom`, сброс `localStorage` в `beforeEach`, проверка `get/set/clear` и `JSON.parse`-fallback (см. `entities/session/model/storage.ts`).

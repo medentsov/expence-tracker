@@ -11,9 +11,9 @@ import { ICommand } from '@nestjs/cqrs';
  * @param name     Имя пользователя (необязательно, до 100 символов).
  */
 export class RegisterCommand implements ICommand {
-  constructor(
-    public readonly email: string,
-    public readonly password: string,
-    public readonly name?: string,
-  ) {}
+	constructor(
+		public readonly email: string,
+		public readonly password: string,
+		public readonly name?: string,
+	) {}
 }

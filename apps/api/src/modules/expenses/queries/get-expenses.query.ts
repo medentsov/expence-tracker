@@ -8,5 +8,5 @@ import { IQuery } from '@nestjs/cqrs';
  * @param userId ID владельца (из `@CurrentUser()`).
  */
 export class GetExpensesQuery implements IQuery {
-  constructor(public readonly userId: string) {}
+	constructor(public readonly userId: string) {}
 }

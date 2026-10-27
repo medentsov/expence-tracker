@@ -2,11 +2,11 @@
 name: commit-to-branch
 description: Git-workflow трекера расходов — коммит в отдельную ветку и PR. Создание ветки от свежего main, атомарные коммиты по Conventional Commits с атрибуцией Co-Authored-By, создание Pull Request через gh pr create. Вызывать по запросу «закоммить», «сделай коммит», «commit», «добавь в ветку», «создай PR», «закоммить и создай PR».
 allowed-tools:
-  - Bash(git *)
-  - Read
-  - AskUserQuestion
-  - Glob
-  - Grep
+    - Bash(git *)
+    - Read
+    - AskUserQuestion
+    - Glob
+    - Grep
 ---
 
 # Git-workflow: коммит в ветку и Pull Request
@@ -107,11 +107,11 @@ EOF
 
 - Ветка **перебазируется/мержится с актуальным `main`**.
 - Проверки зелёные:
-  ```bash
-  npm run typecheck   # 3/3 воркспейса
-  npm run lint        # 3/3 воркспейса
-  npm run build       # успешно
-  ```
+    ```bash
+    npm run typecheck   # 3/3 воркспейса
+    npm run lint        # 3/3 воркспейса
+    npm run build       # успешно
+    ```
 - Ветка запушена: `git push -u origin <branch>`.
 
 ### Заголовок PR
@@ -121,6 +121,7 @@ EOF
 ### Тело PR
 
 Включать:
+
 - **Что реализовано** — инпойнты/экраны/эндпоинты.
 - **Ключевые изменения по слоям** — shared/api/web.
 - **Как проверить** — `npm run dev`, тестовые данные.

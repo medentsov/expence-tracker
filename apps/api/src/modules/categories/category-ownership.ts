@@ -16,14 +16,10 @@ import { PrismaService } from '../../prisma/prisma.service';
  * @throws `NotFoundException` — категория не найдена **или** принадлежит другому
  *         пользователю (одинаковый 404).
  */
-export async function findOwnedCategory(
-  prisma: PrismaService,
-  userId: string,
-  id: string,
-): Promise<Category> {
-  const category = await prisma.category.findUnique({ where: { id } });
-  if (!category || category.userId !== userId) {
-    throw new NotFoundException(`Категория ${id} не найдена`);
-  }
-  return category;
+export async function findOwnedCategory(prisma: PrismaService, userId: string, id: string): Promise<Category> {
+	const category = await prisma.category.findUnique({ where: { id } });
+	if (!category || category.userId !== userId) {
+		throw new NotFoundException(`Категория ${id} не найдена`);
+	}
+	return category;
 }

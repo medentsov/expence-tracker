@@ -16,12 +16,12 @@ import type { TransactionType } from '@prisma/client';
  * @param description Описание (необязательно, до 500 символов).
  */
 export class CreateTransactionCommand implements ICommand {
-  constructor(
-    public readonly userId: string,
-    public readonly amount: number,
-    public readonly type: TransactionType,
-    public readonly date: string,
-    public readonly categoryId: string,
-    public readonly description?: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly amount: number,
+		public readonly type: TransactionType,
+		public readonly date: string,
+		public readonly categoryId: string,
+		public readonly description?: string,
+	) {}
 }

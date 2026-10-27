@@ -14,19 +14,19 @@ import { GetCategoryQuery } from '../get-category.query';
  */
 @QueryHandler(GetCategoryQuery)
 export class GetCategoryHandler implements IQueryHandler<GetCategoryQuery, Category> {
-  constructor(private readonly prisma: PrismaService) {}
+	constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Выполняет получение категории.
-   *
-   * @param query Запрос (`GetCategoryQuery`) с `userId`/`id`.
-   *
-   * @returns Категорию `Category`.
-   *
-   * @throws `NotFoundException` — категория не найдена или принадлежит другому
-   *         пользователю (одинаковый 404).
-   */
-  execute(query: GetCategoryQuery): Promise<Category> {
-    return findOwnedCategory(this.prisma, query.userId, query.id);
-  }
+	/**
+	 * Выполняет получение категории.
+	 *
+	 * @param query Запрос (`GetCategoryQuery`) с `userId`/`id`.
+	 *
+	 * @returns Категорию `Category`.
+	 *
+	 * @throws `NotFoundException` — категория не найдена или принадлежит другому
+	 *         пользователю (одинаковый 404).
+	 */
+	execute(query: GetCategoryQuery): Promise<Category> {
+		return findOwnedCategory(this.prisma, query.userId, query.id);
+	}
 }

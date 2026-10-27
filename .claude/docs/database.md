@@ -6,14 +6,14 @@
 
 ### `User` — пользователь
 
-| Поле | Тип | Ограничения | Назначение |
-|------|-----|-------------|-----------|
-| `id` | String | `@id @default(uuid())` | UUID пользователя (это `JwtPayload.sub`) |
-| `email` | String | `@unique` | Уникальный email — логин и ключ для сверки при входе |
-| `name` | String? | nullable | Отображаемое имя (необязательно) |
-| `passwordHash` | String | — | Хэш пароля (bcrypt, cost 10). Пароль в открытом виде не хранится никогда |
-| `createdAt` | DateTime | `@default(now())` | Дата создания |
-| `updatedAt` | DateTime | `@updatedAt` | Дата последнего изменения |
+| Поле           | Тип      | Ограничения            | Назначение                                                               |
+| -------------- | -------- | ---------------------- | ------------------------------------------------------------------------ |
+| `id`           | String   | `@id @default(uuid())` | UUID пользователя (это `JwtPayload.sub`)                                 |
+| `email`        | String   | `@unique`              | Уникальный email — логин и ключ для сверки при входе                     |
+| `name`         | String?  | nullable               | Отображаемое имя (необязательно)                                         |
+| `passwordHash` | String   | —                      | Хэш пароля (bcrypt, cost 10). Пароль в открытом виде не хранится никогда |
+| `createdAt`    | DateTime | `@default(now())`      | Дата создания                                                            |
+| `updatedAt`    | DateTime | `@updatedAt`           | Дата последнего изменения                                                |
 
 **Связи:** один ко многим → `Category`, `Expense`, `Transaction`.
 
@@ -21,15 +21,15 @@
 
 ### `Category` — категория
 
-| Поле | Тип | Ограничения | Назначение |
-|------|-----|-------------|-----------|
-| `id` | String | `@id @default(uuid())` | UUID категории |
-| `name` | String | — | Название (например, «Продукты») |
-| `icon` | String? | nullable | Эмодзи-иконка для UI |
-| `color` | String? | nullable | HEX-цвет — визуальная метка в UI (добавлено миграцией `add_category_color`) |
-| `createdAt` | DateTime | `@default(now())` | Дата создания |
-| `updatedAt` | DateTime | `@updatedAt` | Дата изменения |
-| `userId` | String | FK → `User`, `onDelete: Cascade` | Владелец категории |
+| Поле        | Тип      | Ограничения                      | Назначение                                                                  |
+| ----------- | -------- | -------------------------------- | --------------------------------------------------------------------------- |
+| `id`        | String   | `@id @default(uuid())`           | UUID категории                                                              |
+| `name`      | String   | —                                | Название (например, «Продукты»)                                             |
+| `icon`      | String?  | nullable                         | Эмодзи-иконка для UI                                                        |
+| `color`     | String?  | nullable                         | HEX-цвет — визуальная метка в UI (добавлено миграцией `add_category_color`) |
+| `createdAt` | DateTime | `@default(now())`                | Дата создания                                                               |
+| `updatedAt` | DateTime | `@updatedAt`                     | Дата изменения                                                              |
+| `userId`    | String   | FK → `User`, `onDelete: Cascade` | Владелец категории                                                          |
 
 **Связи:** принадлежит `User` (Cascade — при удалении пользователя удаляются его категории); один ко многим → `Expense`, `Transaction` (Restrict — категорию с записями удалить нельзя).
 
@@ -37,17 +37,17 @@
 
 ### `Expense` — расход (legacy)
 
-| Поле | Тип | Ограничения | Назначение |
-|------|-----|-------------|-----------|
-| `id` | String | `@id @default(uuid())` | UUID расхода |
-| `amount` | Decimal | `@db.Decimal(12,2)` | Сумма (до 10 знаков до запятой и 2 после) |
-| `currency` | String | `@default("RUB")` | Код валюты (ISO 4217) — отличается от `Transaction`, где валюты нет |
-| `note` | String? | nullable | Комментарий/заметка |
-| `date` | DateTime | `@default(now())` | Дата расхода |
-| `createdAt` | DateTime | `@default(now())` | Дата создания |
-| `updatedAt` | DateTime | `@updatedAt` | Дата изменения |
-| `userId` | String | FK → `User`, `onDelete: Cascade` | Владелец |
-| `categoryId` | String | FK → `Category`, `onDelete: Restrict` | Категория расхода |
+| Поле         | Тип      | Ограничения                           | Назначение                                                          |
+| ------------ | -------- | ------------------------------------- | ------------------------------------------------------------------- |
+| `id`         | String   | `@id @default(uuid())`                | UUID расхода                                                        |
+| `amount`     | Decimal  | `@db.Decimal(12,2)`                   | Сумма (до 10 знаков до запятой и 2 после)                           |
+| `currency`   | String   | `@default("RUB")`                     | Код валюты (ISO 4217) — отличается от `Transaction`, где валюты нет |
+| `note`       | String?  | nullable                              | Комментарий/заметка                                                 |
+| `date`       | DateTime | `@default(now())`                     | Дата расхода                                                        |
+| `createdAt`  | DateTime | `@default(now())`                     | Дата создания                                                       |
+| `updatedAt`  | DateTime | `@updatedAt`                          | Дата изменения                                                      |
+| `userId`     | String   | FK → `User`, `onDelete: Cascade`      | Владелец                                                            |
+| `categoryId` | String   | FK → `Category`, `onDelete: Restrict` | Категория расхода                                                   |
 
 **Индекс:** `@@index([userId, date])` — ускоряет выборку расходов пользователя по дате.
 
@@ -66,17 +66,17 @@ enum TransactionType {
 
 ### `Transaction` — транзакция (основной модуль)
 
-| Поле | Тип | Ограничения | Назначение |
-|------|-----|-------------|-----------|
-| `id` | String | `@id @default(uuid())` | UUID транзакции |
-| `amount` | Decimal | `@db.Decimal(12,2)` | Сумма; на уровне DTO требуется > 0 (`@Min(0.01)`) |
-| `type` | `TransactionType` | — | `INCOME` или `EXPENSE` |
-| `description` | String? | nullable | Описание (до 500 символов на уровне DTO) |
-| `date` | DateTime | — | Дата транзакции (обязательна — передаётся клиентом) |
-| `createdAt` | DateTime | `@default(now())` | Дата создания записи |
-| `updatedAt` | DateTime | `@updatedAt` | Дата изменения |
-| `userId` | String | FK → `User`, `onDelete: Cascade` | Владелец |
-| `categoryId` | String | FK → `Category`, `onDelete: Restrict` | Категория |
+| Поле          | Тип               | Ограничения                           | Назначение                                          |
+| ------------- | ----------------- | ------------------------------------- | --------------------------------------------------- |
+| `id`          | String            | `@id @default(uuid())`                | UUID транзакции                                     |
+| `amount`      | Decimal           | `@db.Decimal(12,2)`                   | Сумма; на уровне DTO требуется > 0 (`@Min(0.01)`)   |
+| `type`        | `TransactionType` | —                                     | `INCOME` или `EXPENSE`                              |
+| `description` | String?           | nullable                              | Описание (до 500 символов на уровне DTO)            |
+| `date`        | DateTime          | —                                     | Дата транзакции (обязательна — передаётся клиентом) |
+| `createdAt`   | DateTime          | `@default(now())`                     | Дата создания записи                                |
+| `updatedAt`   | DateTime          | `@updatedAt`                          | Дата изменения                                      |
+| `userId`      | String            | FK → `User`, `onDelete: Cascade`      | Владелец                                            |
+| `categoryId`  | String            | FK → `Category`, `onDelete: Restrict` | Категория                                           |
 
 **Индекс:** `@@index([userId, date])` — ускоряет листинг транзакций по дате.
 
@@ -101,22 +101,22 @@ User 1 ────n Category 1 ────n Transaction
 
 ## Индексы
 
-| Индекс | Модель | Назначение |
-|--------|--------|-----------|
-| `@@index([userId, date])` | `Expense` | Быстрая выборка расходов пользователя с сортировкой/фильтром по дате |
-| `@@index([userId, date])` | `Transaction` | Быстрая выборка/пагинация транзакций и сводка за месяц |
-| `@unique` (email) | `User` | Уникальность учётной записи + гарантия целостности при регистрации |
+| Индекс                    | Модель        | Назначение                                                           |
+| ------------------------- | ------------- | -------------------------------------------------------------------- |
+| `@@index([userId, date])` | `Expense`     | Быстрая выборка расходов пользователя с сортировкой/фильтром по дате |
+| `@@index([userId, date])` | `Transaction` | Быстрая выборка/пагинация транзакций и сводка за месяц               |
+| `@unique` (email)         | `User`        | Уникальность учётной записи + гарантия целостности при регистрации   |
 
 ## Миграции
 
 В `apps/api/prisma/migrations/` (в хронологическом порядке):
 
-| Миграция | Что изменила |
-|----------|--------------|
-| `20261008143648_init` | Начальная схема |
-| `20261011144024_add_user_password_hash` | Добавлен `User.passwordHash` |
-| `20261011155231_add_category_color` | Добавлены `Category.icon`/`color` |
-| `20261014173918_add_transactions` | Добавлен enum `TransactionType` и модель `Transaction` |
+| Миграция                                | Что изменила                                           |
+| --------------------------------------- | ------------------------------------------------------ |
+| `20261008143648_init`                   | Начальная схема                                        |
+| `20261011144024_add_user_password_hash` | Добавлен `User.passwordHash`                           |
+| `20261011155231_add_category_color`     | Добавлены `Category.icon`/`color`                      |
+| `20261014173918_add_transactions`       | Добавлен enum `TransactionType` и модель `Transaction` |
 
 ## Соглашения
 

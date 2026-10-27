@@ -15,12 +15,12 @@ import { ICommand } from '@nestjs/cqrs';
  * @param date       Дата расхода в ISO 8601 (необязательно; в Prisma поле с `@default(now())`).
  */
 export class CreateExpenseCommand implements ICommand {
-  constructor(
-    public readonly userId: string,
-    public readonly amount: number,
-    public readonly categoryId: string,
-    public readonly currency?: string,
-    public readonly note?: string,
-    public readonly date?: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly amount: number,
+		public readonly categoryId: string,
+		public readonly currency?: string,
+		public readonly note?: string,
+		public readonly date?: string,
+	) {}
 }

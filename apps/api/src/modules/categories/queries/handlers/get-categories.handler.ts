@@ -10,19 +10,19 @@ import { GetCategoriesQuery } from '../get-categories.query';
  */
 @QueryHandler(GetCategoriesQuery)
 export class GetCategoriesHandler implements IQueryHandler<GetCategoriesQuery, Category[]> {
-  constructor(private readonly prisma: PrismaService) {}
+	constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Выполняет получение списка категорий.
-   *
-   * @param query Запрос (`GetCategoriesQuery`) с `userId`.
-   *
-   * @returns Массив `Category[]`, отсортированный по `name` asc.
-   */
-  execute(query: GetCategoriesQuery): Promise<Category[]> {
-    return this.prisma.category.findMany({
-      where: { userId: query.userId },
-      orderBy: { name: 'asc' },
-    });
-  }
+	/**
+	 * Выполняет получение списка категорий.
+	 *
+	 * @param query Запрос (`GetCategoriesQuery`) с `userId`.
+	 *
+	 * @returns Массив `Category[]`, отсортированный по `name` asc.
+	 */
+	execute(query: GetCategoriesQuery): Promise<Category[]> {
+		return this.prisma.category.findMany({
+			where: { userId: query.userId },
+			orderBy: { name: 'asc' },
+		});
+	}
 }

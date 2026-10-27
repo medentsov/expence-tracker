@@ -21,27 +21,27 @@ import { TokenService } from './services/token.service';
  * Зависимости: `@nestjs/jwt`, `@nestjs/core` (`APP_GUARD`), хендлеры/auth-библиотека.
  */
 @Module({
-  imports: [
-    JwtModule.registerAsync({
-      useFactory: () => {
-        const secret = process.env.JWT_SECRET;
-        if (!secret) {
-          throw new Error('JWT_SECRET не задан в окружении');
-        }
-        return {
-          secret,
-          signOptions: { expiresIn: process.env.JWT_EXPIRES_IN ?? '7d' },
-        };
-      },
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [
-    TokenService,
-    RegisterHandler,
-    LoginHandler,
-    // Глобальная защита всех роутов; публичные помечаются декоратором @Public().
-    { provide: APP_GUARD, useClass: JwtAuthGuard },
-  ],
+	imports: [
+		JwtModule.registerAsync({
+			useFactory: () => {
+				const secret = process.env.JWT_SECRET;
+				if (!secret) {
+					throw new Error('JWT_SECRET не задан в окружении');
+				}
+				return {
+					secret,
+					signOptions: { expiresIn: process.env.JWT_EXPIRES_IN ?? '7d' },
+				};
+			},
+		}),
+	],
+	controllers: [AuthController],
+	providers: [
+		TokenService,
+		RegisterHandler,
+		LoginHandler,
+		// Глобальная защита всех роутов; публичные помечаются декоратором @Public().
+		{ provide: APP_GUARD, useClass: JwtAuthGuard },
+	],
 })
 export class AuthModule {}

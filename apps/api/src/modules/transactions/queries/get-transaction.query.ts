@@ -9,8 +9,8 @@ import { IQuery } from '@nestjs/cqrs';
  * @param id     UUID транзакции.
  */
 export class GetTransactionQuery implements IQuery {
-  constructor(
-    public readonly userId: string,
-    public readonly id: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly id: string,
+	) {}
 }

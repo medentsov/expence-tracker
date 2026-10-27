@@ -9,18 +9,18 @@ import { IsInt, Max, Min } from 'class-validator';
  * диапазоны контролируются `@Min`/`@Max`.
  */
 export class GetTransactionsSummaryQueryDto {
-  /** Месяц (1–12). */
-  @ApiProperty({ example: 10, description: 'Месяц (1–12)' })
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @Max(12)
-  month!: number;
+	/** Месяц (1–12). */
+	@ApiProperty({ example: 10, description: 'Месяц (1–12)' })
+	@Type(() => Number)
+	@IsInt()
+	@Min(1)
+	@Max(12)
+	month!: number;
 
-  /** Год (≥ 2000). */
-  @ApiProperty({ example: 2026, description: 'Год' })
-  @Type(() => Number)
-  @IsInt()
-  @Min(2000)
-  year!: number;
+	/** Год (≥ 2000). */
+	@ApiProperty({ example: 2026, description: 'Год' })
+	@Type(() => Number)
+	@IsInt()
+	@Min(2000)
+	year!: number;
 }

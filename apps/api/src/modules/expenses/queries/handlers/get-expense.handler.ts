@@ -13,19 +13,19 @@ import { GetExpenseQuery } from '../get-expense.query';
  */
 @QueryHandler(GetExpenseQuery)
 export class GetExpenseHandler implements IQueryHandler<GetExpenseQuery, ExpenseWithCategory> {
-  constructor(private readonly prisma: PrismaService) {}
+	constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Выполняет получение расхода.
-   *
-   * @param query Запрос (`GetExpenseQuery`) с `userId`/`id`.
-   *
-   * @returns Расход со вложенной категорией (`ExpenseWithCategory`).
-   *
-   * @throws `NotFoundException` — расход не найден или принадлежит другому
-   *         пользователю (одинаковый 404).
-   */
-  execute(query: GetExpenseQuery): Promise<ExpenseWithCategory> {
-    return findOwnedExpense(this.prisma, query.userId, query.id);
-  }
+	/**
+	 * Выполняет получение расхода.
+	 *
+	 * @param query Запрос (`GetExpenseQuery`) с `userId`/`id`.
+	 *
+	 * @returns Расход со вложенной категорией (`ExpenseWithCategory`).
+	 *
+	 * @throws `NotFoundException` — расход не найден или принадлежит другому
+	 *         пользователю (одинаковый 404).
+	 */
+	execute(query: GetExpenseQuery): Promise<ExpenseWithCategory> {
+		return findOwnedExpense(this.prisma, query.userId, query.id);
+	}
 }

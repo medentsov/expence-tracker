@@ -17,13 +17,13 @@ import type { TransactionType } from '@prisma/client';
  * @param description Новое описание (необязательно).
  */
 export class UpdateTransactionCommand implements ICommand {
-  constructor(
-    public readonly userId: string,
-    public readonly id: string,
-    public readonly amount?: number,
-    public readonly type?: TransactionType,
-    public readonly date?: string,
-    public readonly categoryId?: string,
-    public readonly description?: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly id: string,
+		public readonly amount?: number,
+		public readonly type?: TransactionType,
+		public readonly date?: string,
+		public readonly categoryId?: string,
+		public readonly description?: string,
+	) {}
 }

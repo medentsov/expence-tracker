@@ -17,43 +17,43 @@ import { CreateUserCommand } from '../create-user.command';
  */
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand, User> {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly eventBus: EventBus,
-  ) {}
+	constructor(
+		private readonly usersService: UsersService,
+		private readonly eventBus: EventBus,
+	) {}
 
-  /**
-   * Выполняет создание пользователя.
-   *
-   * @param command Команда (`CreateUserCommand`) с email, passwordHash, name?.
-   *
-   * @returns Публичного пользователя `User` (без `passwordHash`).
-   *
-   * @throws `ConflictException` — «Пользователь с таким email уже существует»
-   *         (антиципация или P2002 из БД).
-   */
-  async execute(command: CreateUserCommand): Promise<User> {
-    if (await this.usersService.findByEmail(command.email)) {
-      throw new ConflictException('Пользователь с таким email уже существует');
-    }
+	/**
+	 * Выполняет создание пользователя.
+	 *
+	 * @param command Команда (`CreateUserCommand`) с email, passwordHash, name?.
+	 *
+	 * @returns Публичного пользователя `User` (без `passwordHash`).
+	 *
+	 * @throws `ConflictException` — «Пользователь с таким email уже существует»
+	 *         (антиципация или P2002 из БД).
+	 */
+	async execute(command: CreateUserCommand): Promise<User> {
+		if (await this.usersService.findByEmail(command.email)) {
+			throw new ConflictException('Пользователь с таким email уже существует');
+		}
 
-    let user: PrismaUser;
-    try {
-      user = await this.usersService.createUser({
-        email: command.email,
-        passwordHash: command.passwordHash,
-        name: command.name,
-      });
-    } catch (error) {
-      // Гонка при одновременной регистрации: сработал UNIQUE(email) в БД.
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new ConflictException('Пользователь с таким email уже существует');
-      }
-      throw error;
-    }
+		let user: PrismaUser;
+		try {
+			user = await this.usersService.createUser({
+				email: command.email,
+				passwordHash: command.passwordHash,
+				name: command.name,
+			});
+		} catch (error) {
+			// Гонка при одновременной регистрации: сработал UNIQUE(email) в БД.
+			if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+				throw new ConflictException('Пользователь с таким email уже существует');
+			}
+			throw error;
+		}
 
-    this.eventBus.publish(new UserRegisteredEvent(user.id, user.email));
+		this.eventBus.publish(new UserRegisteredEvent(user.id, user.email));
 
-    return this.usersService.toPublicUser(user);
-  }
+		return this.usersService.toPublicUser(user);
+	}
 }
