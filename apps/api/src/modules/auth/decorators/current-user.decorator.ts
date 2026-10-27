@@ -14,9 +14,7 @@ import type { AuthenticatedUser } from '../interfaces/jwt-payload.interface';
  * @throws `Error` (типа request без `user`) — если guard не выполнился (например,
  *         эндпоинт не защищён или декоратор применён вне защищённого роута).
  */
-export const CurrentUser = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext): AuthenticatedUser => {
-    const request = ctx.switchToHttp().getRequest<Request>();
-    return request.user as AuthenticatedUser;
-  },
-);
+export const CurrentUser = createParamDecorator((_data: unknown, ctx: ExecutionContext): AuthenticatedUser => {
+	const request = ctx.switchToHttp().getRequest<Request>();
+	return request.user as AuthenticatedUser;
+});

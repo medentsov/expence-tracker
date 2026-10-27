@@ -2,11 +2,11 @@ import type { AuthenticatedUser } from '../modules/auth/interfaces/jwt-payload.i
 
 // Расширяем Express.Request полем user, которое заполняет JwtAuthGuard.
 declare global {
-  namespace Express {
-    interface Request {
-      user?: AuthenticatedUser;
-    }
-  }
+	namespace Express {
+		interface Request {
+			user?: AuthenticatedUser;
+		}
+	}
 }
 
 export {};

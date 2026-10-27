@@ -5,18 +5,18 @@ export type SessionStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
 // Полезная нагрузка JWT, которую отдаёт GET /auth/me (это НЕ объект User).
 export interface MePayload {
-  sub: string;
-  email: string;
-  name?: string;
+	sub: string;
+	email: string;
+	name?: string;
 }
 
 export interface SessionContextValue {
-  user: User | null;
-  status: SessionStatus;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  // Сохраняет сессию после успешного login/register.
-  signIn: (auth: AuthResponse) => void;
-  // Очищает сессию; навигацию выполняет вызывающий.
-  signOut: () => void;
+	user: User | null;
+	status: SessionStatus;
+	isAuthenticated: boolean;
+	isLoading: boolean;
+	// Сохраняет сессию после успешного login/register.
+	signIn: (auth: AuthResponse) => void;
+	// Очищает сессию; навигацию выполняет вызывающий.
+	signOut: () => void;
 }

@@ -22,14 +22,14 @@ import { TransactionsController } from './transactions.controller';
  * - запросы: `GetTransactionsHandler`, `GetTransactionHandler`, `GetTransactionsSummaryHandler`.
  */
 @Module({
-  controllers: [TransactionsController],
-  providers: [
-    CreateTransactionHandler,
-    UpdateTransactionHandler,
-    DeleteTransactionHandler,
-    GetTransactionsHandler,
-    GetTransactionHandler,
-    GetTransactionsSummaryHandler,
-  ],
+	controllers: [TransactionsController],
+	providers: [
+		CreateTransactionHandler,
+		UpdateTransactionHandler,
+		DeleteTransactionHandler,
+		GetTransactionsHandler,
+		GetTransactionHandler,
+		GetTransactionsSummaryHandler,
+	],
 })
 export class TransactionsModule {}

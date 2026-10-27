@@ -12,22 +12,20 @@ import { GetTransactionQuery } from '../get-transaction.query';
  *         пользователю.
  */
 @QueryHandler(GetTransactionQuery)
-export class GetTransactionHandler
-  implements IQueryHandler<GetTransactionQuery, TransactionWithCategory>
-{
-  constructor(private readonly prisma: PrismaService) {}
+export class GetTransactionHandler implements IQueryHandler<GetTransactionQuery, TransactionWithCategory> {
+	constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Выполняет получение транзакции.
-   *
-   * @param query Запрос (`GetTransactionQuery`) с `userId`/`id`.
-   *
-   * @returns Транзакцию со вложенной категорией (`TransactionWithCategory`).
-   *
-   * @throws `NotFoundException` — транзакция не найдена или принадлежит другому
-   *         пользователю (одинаковый 404).
-   */
-  execute(query: GetTransactionQuery): Promise<TransactionWithCategory> {
-    return findOwnedTransaction(this.prisma, query.userId, query.id);
-  }
+	/**
+	 * Выполняет получение транзакции.
+	 *
+	 * @param query Запрос (`GetTransactionQuery`) с `userId`/`id`.
+	 *
+	 * @returns Транзакцию со вложенной категорией (`TransactionWithCategory`).
+	 *
+	 * @throws `NotFoundException` — транзакция не найдена или принадлежит другому
+	 *         пользователю (одинаковый 404).
+	 */
+	execute(query: GetTransactionQuery): Promise<TransactionWithCategory> {
+		return findOwnedTransaction(this.prisma, query.userId, query.id);
+	}
 }

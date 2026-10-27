@@ -2,11 +2,11 @@
 name: standup
 user-invocable: true
 allowed-tools:
-  - Bash(git *)
-  - Bash(date *)
-  - Read
-  - Glob
-  - Grep
+    - Bash(git *)
+    - Bash(date *)
+    - Read
+    - Glob
+    - Grep
 ---
 
 # Стендап: что сделано вчера

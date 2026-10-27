@@ -11,10 +11,10 @@ import { ICommand } from '@nestjs/cqrs';
  * @param color  HEX-цвет (необязательно, например `#FF5722`).
  */
 export class CreateCategoryCommand implements ICommand {
-  constructor(
-    public readonly userId: string,
-    public readonly name: string,
-    public readonly icon?: string,
-    public readonly color?: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly name: string,
+		public readonly icon?: string,
+		public readonly color?: string,
+	) {}
 }

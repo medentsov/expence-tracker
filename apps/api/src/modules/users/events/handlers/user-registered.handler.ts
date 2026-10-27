@@ -10,14 +10,14 @@ import { UserRegisteredEvent } from '../user-registered.event';
  */
 @EventsHandler(UserRegisteredEvent)
 export class UserRegisteredHandler implements IEventHandler<UserRegisteredEvent> {
-  private readonly logger = new Logger(UserRegisteredHandler.name);
+	private readonly logger = new Logger(UserRegisteredHandler.name);
 
-  /**
-   * Обрабатывает событие регистрации.
-   *
-   * @param event Событие (`UserRegisteredEvent`) с `userId` и `email`.
-   */
-  handle(event: UserRegisteredEvent): void {
-    this.logger.log(`Зарегистрирован пользователь ${event.userId} (${event.email})`);
-  }
+	/**
+	 * Обрабатывает событие регистрации.
+	 *
+	 * @param event Событие (`UserRegisteredEvent`) с `userId` и `email`.
+	 */
+	handle(event: UserRegisteredEvent): void {
+		this.logger.log(`Зарегистрирован пользователь ${event.userId} (${event.email})`);
+	}
 }

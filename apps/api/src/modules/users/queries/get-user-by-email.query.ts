@@ -8,5 +8,5 @@ import { IQuery } from '@nestjs/cqrs';
  * @param email Email пользователя.
  */
 export class GetUserByEmailQuery implements IQuery {
-  constructor(public readonly email: string) {}
+	constructor(public readonly email: string) {}
 }

@@ -4,10 +4,10 @@
  * Явный тип, чтобы Prisma-модель `User` не протекала в другие модули.
  */
 export interface UserCredentials {
-  id: string;
-  email: string;
-  name: string | null;
-  passwordHash: string;
-  createdAt: Date;
-  updatedAt: Date;
+	id: string;
+	email: string;
+	name: string | null;
+	passwordHash: string;
+	createdAt: Date;
+	updatedAt: Date;
 }

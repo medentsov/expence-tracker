@@ -17,13 +17,13 @@ import { GetExpensesHandler } from './queries/handlers/get-expenses.handler';
  * по `userId` — внутри хендлеров/ownership-проверок.
  */
 @Module({
-  controllers: [ExpensesController],
-  providers: [
-    CreateExpenseHandler,
-    UpdateExpenseHandler,
-    DeleteExpenseHandler,
-    GetExpensesHandler,
-    GetExpenseHandler,
-  ],
+	controllers: [ExpensesController],
+	providers: [
+		CreateExpenseHandler,
+		UpdateExpenseHandler,
+		DeleteExpenseHandler,
+		GetExpensesHandler,
+		GetExpenseHandler,
+	],
 })
 export class ExpensesModule {}

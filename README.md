@@ -4,15 +4,15 @@
 
 ## Стек
 
-| Слой       | Технология                                     |
-|------------|------------------------------------------------|
-| Фронтенд   | Next.js 15 (App Router, TypeScript, Tailwind v4, shadcn/ui) |
-| Бэкенд     | NestJS 10 (TypeScript, CQRS)                   |
-| БД         | PostgreSQL 16 (Docker Compose)                 |
-| ORM        | Prisma 5                                       |
-| API        | REST + Swagger/OpenAPI                         |
-| Auth       | JWT (Bearer-токен), bcryptjs                   |
-| Монорепо   | npm workspaces + Turborepo                     |
+| Слой     | Технология                                                  |
+| -------- | ----------------------------------------------------------- |
+| Фронтенд | Next.js 15 (App Router, TypeScript, Tailwind v4, shadcn/ui) |
+| Бэкенд   | NestJS 10 (TypeScript, CQRS)                                |
+| БД       | PostgreSQL 16 (Docker Compose)                              |
+| ORM      | Prisma 5                                                    |
+| API      | REST + Swagger/OpenAPI                                      |
+| Auth     | JWT (Bearer-токен), bcryptjs                                |
+| Монорепо | npm workspaces + Turborepo                                  |
 
 ## Требования
 
@@ -66,12 +66,12 @@ cp apps/api/.env.example apps/api/.env        # переменные API (в git
 
 Основные переменные (из `apps/api/.env.example`):
 
-| Переменная        | По умолчанию                                   | Назначение                                  |
-|-------------------|------------------------------------------------|---------------------------------------------|
-| `DATABASE_URL`    | `postgresql://postgres:postgres@localhost:5432/tracker` | Строка подключения к PostgreSQL      |
-| `PORT`            | `3001`                                         | Порт NestJS API                              |
-| `JWT_SECRET`      | `dev-secret-change-me-in-production`           | Секрет подписи JWT (заменить в проде)       |
-| `JWT_EXPIRES_IN`  | `7d`                                           | Срок жизни access-токена                    |
+| Переменная       | По умолчанию                                            | Назначение                            |
+| ---------------- | ------------------------------------------------------- | ------------------------------------- |
+| `DATABASE_URL`   | `postgresql://postgres:postgres@localhost:5432/tracker` | Строка подключения к PostgreSQL       |
+| `PORT`           | `3001`                                                  | Порт NestJS API                       |
+| `JWT_SECRET`     | `dev-secret-change-me-in-production`                    | Секрет подписи JWT (заменить в проде) |
+| `JWT_EXPIRES_IN` | `7d`                                                    | Срок жизни access-токена              |
 
 Фронтенд использует `NEXT_PUBLIC_API_URL` (по умолчанию `http://localhost:3001`).
 
@@ -96,21 +96,21 @@ npm run prisma:migrate -w @tracker/api     # применить миграции
 npm run dev    # запускает web и api параллельно (Turborepo)
 ```
 
-| Сервис                                    | URL                                    |
-|-------------------------------------------|----------------------------------------|
-| Фронтенд                                  | http://localhost:3000                  |
-| API                                       | http://localhost:3001                  |
-| Swagger (документация API)                | http://localhost:3001/api/docs         |
+| Сервис                     | URL                            |
+| -------------------------- | ------------------------------ |
+| Фронтенд                   | http://localhost:3000          |
+| API                        | http://localhost:3001          |
+| Swagger (документация API) | http://localhost:3001/api/docs |
 
 ## Скрипты (корень)
 
-| Команда             | Действие                                             |
-|---------------------|------------------------------------------------------|
-| `npm run dev`       | Запуск dev-серверов (web + api)                      |
-| `npm run build`     | Сборка всех пакетов                                  |
-| `npm run lint`      | Линт всех воркспейсов                                |
-| `npm run typecheck` | Проверка типов по всем воркспейсам                   |
-| `npm run format`    | Форматирование Prettier                              |
+| Команда             | Действие                           |
+| ------------------- | ---------------------------------- |
+| `npm run dev`       | Запуск dev-серверов (web + api)    |
+| `npm run build`     | Сборка всех пакетов                |
+| `npm run lint`      | Линт всех воркспейсов              |
+| `npm run typecheck` | Проверка типов по всем воркспейсам |
+| `npm run format`    | Форматирование Prettier            |
 
 Точечные команды: `npm run dev -w @tracker/api`, `npm run dev -w @tracker/web` и т. д.
 
@@ -120,44 +120,44 @@ npm run dev    # запускает web и api параллельно (Turborepo
 
 ### Auth (`/auth`) — публичные
 
-| Метод | Путь           | Описание                          |
-|-------|----------------|-----------------------------------|
+| Метод | Путь             | Описание                                        |
+| ----- | ---------------- | ----------------------------------------------- |
 | POST  | `/auth/register` | Регистрация, возвращает `{ accessToken, user }` |
-| POST  | `/auth/login`    | Вход по email/паролю, `{ accessToken, user }` |
-| GET   | `/auth/me`       | 🔒 Профиль текущего пользователя из JWT |
+| POST  | `/auth/login`    | Вход по email/паролю, `{ accessToken, user }`   |
+| GET   | `/auth/me`       | 🔒 Профиль текущего пользователя из JWT         |
 
 ### Categories (`/categories`) — 🔒
 
-| Метод  | Путь             | Описание                            |
-|--------|------------------|-------------------------------------|
-| GET    | `/categories`    | Список категорий (по `name` asc)     |
-| POST   | `/categories`    | Создать категорию                   |
-| GET    | `/categories/:id`| Категория по UUID                   |
-| PATCH  | `/categories/:id`| Обновить категорию                  |
-| DELETE | `/categories/:id`| Удалить категорию                   |
+| Метод  | Путь              | Описание                         |
+| ------ | ----------------- | -------------------------------- |
+| GET    | `/categories`     | Список категорий (по `name` asc) |
+| POST   | `/categories`     | Создать категорию                |
+| GET    | `/categories/:id` | Категория по UUID                |
+| PATCH  | `/categories/:id` | Обновить категорию               |
+| DELETE | `/categories/:id` | Удалить категорию                |
 
 ### Transactions (`/transactions`) — 🔒
 
-| Метод  | Путь                 | Описание                                          |
-|--------|----------------------|---------------------------------------------------|
-| GET    | `/transactions`      | Пагинация + фильтры `dateFrom`, `dateTo`, `type`, `categoryId`, `page`, `limit` (по умолч. `page=1&limit=10`, макс. `limit=100`) |
-| POST   | `/transactions`      | Создать транзакцию (`amount`, `type`, `date`, `categoryId`, `description?`) |
-| GET    | `/transactions/summary` | Сводка за месяц (`month`/`year`): `{ totalIncome, totalExpense, balance }` |
-| GET    | `/transactions/:id`  | Транзакция по UUID (с вложенной категорией)       |
-| PATCH  | `/transactions/:id`  | Обновить транзакцию                               |
-| DELETE | `/transactions/:id`  | Удалить транзакцию                                |
+| Метод  | Путь                    | Описание                                                                                                                         |
+| ------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/transactions`         | Пагинация + фильтры `dateFrom`, `dateTo`, `type`, `categoryId`, `page`, `limit` (по умолч. `page=1&limit=10`, макс. `limit=100`) |
+| POST   | `/transactions`         | Создать транзакцию (`amount`, `type`, `date`, `categoryId`, `description?`)                                                      |
+| GET    | `/transactions/summary` | Сводка за месяц (`month`/`year`): `{ totalIncome, totalExpense, balance }`                                                       |
+| GET    | `/transactions/:id`     | Транзакция по UUID (с вложенной категорией)                                                                                      |
+| PATCH  | `/transactions/:id`     | Обновить транзакцию                                                                                                              |
+| DELETE | `/transactions/:id`     | Удалить транзакцию                                                                                                               |
 
 ### Expenses (`/expenses`) — 🔒 (legacy)
 
 Legacy-модуль, создан раньше `transactions`. Новый код ведётся через `transactions`, `expenses` поддерживается для обратной совместимости:
 
-| Метод  | Путь             | Описание                          |
-|--------|------------------|-----------------------------------|
-| GET    | `/expenses`      | Список расходов (по `date` desc)   |
-| POST   | `/expenses`      | Создать расход                    |
-| GET    | `/expenses/:id`  | Расход по UUID                    |
-| PATCH  | `/expenses/:id`  | Обновить расход                   |
-| DELETE | `/expenses/:id`  | Удалить расход                    |
+| Метод  | Путь            | Описание                         |
+| ------ | --------------- | -------------------------------- |
+| GET    | `/expenses`     | Список расходов (по `date` desc) |
+| POST   | `/expenses`     | Создать расход                   |
+| GET    | `/expenses/:id` | Расход по UUID                   |
+| PATCH  | `/expenses/:id` | Обновить расход                  |
+| DELETE | `/expenses/:id` | Удалить расход                   |
 
 ## Рабочий процесс и документация
 

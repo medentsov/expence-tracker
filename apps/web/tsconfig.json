@@ -1,24 +1,24 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "jsx": "preserve",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "allowJs": true,
-    "noEmit": true,
-    "incremental": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@tracker/shared": ["../../packages/shared/src"]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"jsx": "preserve",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"allowJs": true,
+		"noEmit": true,
+		"incremental": true,
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"@tracker/shared": ["../../packages/shared/src"]
+		},
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
+	},
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"exclude": ["node_modules"]
 }

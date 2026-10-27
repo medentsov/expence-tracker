@@ -10,8 +10,8 @@ import { ICommand } from '@nestjs/cqrs';
  * @param password Пароль (по вхождению не валидируется по длине — важен факт совпадения).
  */
 export class LoginCommand implements ICommand {
-  constructor(
-    public readonly email: string,
-    public readonly password: string,
-  ) {}
+	constructor(
+		public readonly email: string,
+		public readonly password: string,
+	) {}
 }

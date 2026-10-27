@@ -10,8 +10,8 @@ import { IEvent } from '@nestjs/cqrs';
  * @param email  Email созданного пользователя.
  */
 export class UserRegisteredEvent implements IEvent {
-  constructor(
-    public readonly userId: string,
-    public readonly email: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly email: string,
+	) {}
 }

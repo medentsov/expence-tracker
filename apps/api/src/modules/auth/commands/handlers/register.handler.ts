@@ -13,39 +13,39 @@ import { RegisterCommand } from '../register.command';
  */
 @CommandHandler(RegisterCommand)
 export class RegisterHandler implements ICommandHandler<RegisterCommand, AuthResponse> {
-  /** Стоимость хэширования bcrypt. */
-  private static readonly BCRYPT_ROUNDS = 10;
+	/** Стоимость хэширования bcrypt. */
+	private static readonly BCRYPT_ROUNDS = 10;
 
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly tokenService: TokenService,
-  ) {}
+	constructor(
+		private readonly commandBus: CommandBus,
+		private readonly tokenService: TokenService,
+	) {}
 
-  /**
-   * Выполняет регистрацию.
-   *
-   * @param command Команда (`RegisterCommand`) с email, паролем и опциональным именем.
-   *
-   * @returns `AuthResponse`: `{ accessToken, user }` (полный публичный профиль).
-   *
-   * @throws `ConflictException` — пользователь с таким email уже существует
-   *         (бросает `CreateUserHandler` в модуле `users`).
-   */
-  async execute(command: RegisterCommand): Promise<AuthResponse> {
-    const passwordHash = await bcrypt.hash(command.password, RegisterHandler.BCRYPT_ROUNDS);
+	/**
+	 * Выполняет регистрацию.
+	 *
+	 * @param command Команда (`RegisterCommand`) с email, паролем и опциональным именем.
+	 *
+	 * @returns `AuthResponse`: `{ accessToken, user }` (полный публичный профиль).
+	 *
+	 * @throws `ConflictException` — пользователь с таким email уже существует
+	 *         (бросает `CreateUserHandler` в модуле `users`).
+	 */
+	async execute(command: RegisterCommand): Promise<AuthResponse> {
+		const passwordHash = await bcrypt.hash(command.password, RegisterHandler.BCRYPT_ROUNDS);
 
-    // Создание пользователя — через шину: модуль users сам решает,
-    // как проверять уникальность и какие ошибки бросать.
-    const user = await this.commandBus.execute<CreateUserCommand, User>(
-      new CreateUserCommand(command.email, passwordHash, command.name),
-    );
+		// Создание пользователя — через шину: модуль users сам решает,
+		// как проверять уникальность и какие ошибки бросать.
+		const user = await this.commandBus.execute<CreateUserCommand, User>(
+			new CreateUserCommand(command.email, passwordHash, command.name),
+		);
 
-    const accessToken = await this.tokenService.sign({
-      sub: user.id,
-      email: user.email,
-      name: user.name ?? undefined,
-    });
+		const accessToken = await this.tokenService.sign({
+			sub: user.id,
+			email: user.email,
+			name: user.name ?? undefined,
+		});
 
-    return { accessToken, user };
-  }
+		return { accessToken, user };
+	}
 }

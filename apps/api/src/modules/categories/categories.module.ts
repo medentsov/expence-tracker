@@ -17,13 +17,13 @@ import { CategoriesController } from './categories.controller';
  * по `userId` — внутри хендлеров/ownership-проверок.
  */
 @Module({
-  controllers: [CategoriesController],
-  providers: [
-    CreateCategoryHandler,
-    UpdateCategoryHandler,
-    DeleteCategoryHandler,
-    GetCategoriesHandler,
-    GetCategoryHandler,
-  ],
+	controllers: [CategoriesController],
+	providers: [
+		CreateCategoryHandler,
+		UpdateCategoryHandler,
+		DeleteCategoryHandler,
+		GetCategoriesHandler,
+		GetCategoryHandler,
+	],
 })
 export class CategoriesModule {}

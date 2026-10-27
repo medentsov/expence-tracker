@@ -16,12 +16,6 @@ import { UsersService } from './users.service';
  * Схема и данные — в `prisma/schema.prisma` (модель `User` с `passwordHash`).
  */
 @Module({
-  providers: [
-    UsersService,
-    UserRepository,
-    CreateUserHandler,
-    GetUserByEmailHandler,
-    UserRegisteredHandler,
-  ],
+	providers: [UsersService, UserRepository, CreateUserHandler, GetUserByEmailHandler, UserRegisteredHandler],
 })
 export class UsersModule {}

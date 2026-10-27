@@ -9,8 +9,8 @@ import { ICommand } from '@nestjs/cqrs';
  * @param id     UUID расхода.
  */
 export class DeleteExpenseCommand implements ICommand {
-  constructor(
-    public readonly userId: string,
-    public readonly id: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly id: string,
+	) {}
 }

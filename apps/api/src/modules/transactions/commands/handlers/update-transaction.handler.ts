@@ -17,38 +17,38 @@ import { UpdateTransactionCommand } from '../update-transaction.command';
  */
 @CommandHandler(UpdateTransactionCommand)
 export class UpdateTransactionHandler implements ICommandHandler<UpdateTransactionCommand, Transaction> {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly queryBus: QueryBus,
-  ) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly queryBus: QueryBus,
+	) {}
 
-  /**
-   * Выполняет обновление транзакции.
-   *
-   * @param command Команда с `userId`/`id` и опциональными полями (`UpdateTransactionCommand`).
-   *
-   * @returns Обновлённую сущность `Transaction` (без вложенной категории).
-   *
-   * @throws `NotFoundException` — транзакция не найдена/чужая, либо новая
-   *         категория (`categoryId`) не принадлежит пользователю.
-   */
-  async execute(command: UpdateTransactionCommand): Promise<Transaction> {
-    await findOwnedTransaction(this.prisma, command.userId, command.id);
+	/**
+	 * Выполняет обновление транзакции.
+	 *
+	 * @param command Команда с `userId`/`id` и опциональными полями (`UpdateTransactionCommand`).
+	 *
+	 * @returns Обновлённую сущность `Transaction` (без вложенной категории).
+	 *
+	 * @throws `NotFoundException` — транзакция не найдена/чужая, либо новая
+	 *         категория (`categoryId`) не принадлежит пользователю.
+	 */
+	async execute(command: UpdateTransactionCommand): Promise<Transaction> {
+		await findOwnedTransaction(this.prisma, command.userId, command.id);
 
-    // Если меняется категория — проверяем её принадлежность пользователю.
-    if (command.categoryId) {
-      await this.queryBus.execute(new GetCategoryQuery(command.userId, command.categoryId));
-    }
+		// Если меняется категория — проверяем её принадлежность пользователю.
+		if (command.categoryId) {
+			await this.queryBus.execute(new GetCategoryQuery(command.userId, command.categoryId));
+		}
 
-    return this.prisma.transaction.update({
-      where: { id: command.id },
-      data: {
-        amount: command.amount,
-        type: command.type,
-        description: command.description,
-        date: command.date ? new Date(command.date) : undefined,
-        categoryId: command.categoryId,
-      },
-    });
-  }
+		return this.prisma.transaction.update({
+			where: { id: command.id },
+			data: {
+				amount: command.amount,
+				type: command.type,
+				description: command.description,
+				date: command.date ? new Date(command.date) : undefined,
+				categoryId: command.categoryId,
+			},
+		});
+	}
 }

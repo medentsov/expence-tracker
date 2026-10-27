@@ -22,16 +22,16 @@ export type ExpenseWithCategory = Prisma.ExpenseGetPayload<{ include: { category
  *         пользователю (одинаковый 404).
  */
 export async function findOwnedExpense(
-  prisma: PrismaService,
-  userId: string,
-  id: string,
+	prisma: PrismaService,
+	userId: string,
+	id: string,
 ): Promise<ExpenseWithCategory> {
-  const expense = await prisma.expense.findUnique({
-    where: { id },
-    include: { category: true },
-  });
-  if (!expense || expense.userId !== userId) {
-    throw new NotFoundException(`Расход ${id} не найден`);
-  }
-  return expense;
+	const expense = await prisma.expense.findUnique({
+		where: { id },
+		include: { category: true },
+	});
+	if (!expense || expense.userId !== userId) {
+		throw new NotFoundException(`Расход ${id} не найден`);
+	}
+	return expense;
 }

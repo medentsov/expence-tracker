@@ -9,8 +9,8 @@ import { ICommand } from '@nestjs/cqrs';
  * @param id     UUID категории.
  */
 export class DeleteCategoryCommand implements ICommand {
-  constructor(
-    public readonly userId: string,
-    public readonly id: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly id: string,
+	) {}
 }

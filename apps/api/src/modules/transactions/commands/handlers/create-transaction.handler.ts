@@ -15,34 +15,34 @@ import { CreateTransactionCommand } from '../create-transaction.command';
  */
 @CommandHandler(CreateTransactionCommand)
 export class CreateTransactionHandler implements ICommandHandler<CreateTransactionCommand, Transaction> {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly queryBus: QueryBus,
-  ) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly queryBus: QueryBus,
+	) {}
 
-  /**
-   * Выполняет создание транзакции.
-   *
-   * @param command Команда с данными транзакции (`CreateTransactionCommand`).
-   *
-   * @returns Созданную сущность `Transaction` (без вложенной категории).
-   *
-   * @throws `NotFoundException` — категория (`categoryId`) не найдена или
-   *         принадлежит другому пользователю.
-   */
-  async execute(command: CreateTransactionCommand): Promise<Transaction> {
-    // Проверяем, что категория принадлежит пользователю (иначе 404) — через шину.
-    await this.queryBus.execute(new GetCategoryQuery(command.userId, command.categoryId));
+	/**
+	 * Выполняет создание транзакции.
+	 *
+	 * @param command Команда с данными транзакции (`CreateTransactionCommand`).
+	 *
+	 * @returns Созданную сущность `Transaction` (без вложенной категории).
+	 *
+	 * @throws `NotFoundException` — категория (`categoryId`) не найдена или
+	 *         принадлежит другому пользователю.
+	 */
+	async execute(command: CreateTransactionCommand): Promise<Transaction> {
+		// Проверяем, что категория принадлежит пользователю (иначе 404) — через шину.
+		await this.queryBus.execute(new GetCategoryQuery(command.userId, command.categoryId));
 
-    return this.prisma.transaction.create({
-      data: {
-        amount: command.amount,
-        type: command.type,
-        description: command.description,
-        date: new Date(command.date),
-        userId: command.userId,
-        categoryId: command.categoryId,
-      },
-    });
-  }
+		return this.prisma.transaction.create({
+			data: {
+				amount: command.amount,
+				type: command.type,
+				description: command.description,
+				date: new Date(command.date),
+				userId: command.userId,
+				categoryId: command.categoryId,
+			},
+		});
+	}
 }

@@ -11,8 +11,8 @@ import { IQuery } from '@nestjs/cqrs';
  * @param id     UUID категории.
  */
 export class GetCategoryQuery implements IQuery {
-  constructor(
-    public readonly userId: string,
-    public readonly id: string,
-  ) {}
+	constructor(
+		public readonly userId: string,
+		public readonly id: string,
+	) {}
 }

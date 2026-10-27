@@ -5,9 +5,9 @@
  * проверяется в `JwtAuthGuard`.
  */
 export interface JwtPayload {
-  sub: string;
-  email: string;
-  name?: string;
+	sub: string;
+	email: string;
+	name?: string;
 }
 
 /**
@@ -17,7 +17,7 @@ export interface JwtPayload {
  * в контроллерах через `@CurrentUser()`.
  */
 export interface AuthenticatedUser {
-  id: string;
-  email: string;
-  name?: string;
+	id: string;
+	email: string;
+	name?: string;
 }

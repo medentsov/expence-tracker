@@ -24,16 +24,19 @@
 ## Чеклист реализации
 
 ### 0. Планирование и ветка
+
 - [x] Разведка фронтенда (FSD-слои, session, `apiFetch`), бэкенда (CQRS, модуль transactions) и shared-типов
 - [x] Уточнены развилки (пагинация, заглушки, сводка, место шапки)
 - [x] Создана ветка `feat/main-screen-frontend`
 - [x] Правила GitHub Flow зафиксированы в `CLAUDE.md`
 
 ### 1. Общие типы `packages/shared`
+
 - [x] `src/types/pagination.ts` — `Paginated<T>` (`items`, `total`, `page`, `limit`)
 - [x] Экспорт в `src/index.ts`
 
 ### 2. Бэкенд `apps/api` — пагинация транзакций
+
 - [x] `GetTransactionsQueryDto`: `page` (`@Min(1)`) и `limit` (`1–100`, по умолчанию 10)
 - [x] `GetTransactionsQuery`: поля `page`, `limit`
 - [x] `TransactionsController.findAll`: проброс `page`/`limit`
@@ -41,10 +44,12 @@
 - [x] Приведение `Decimal → number` и `Date → ISO` для соответствия shared-типам
 
 ### 3. Фронтенд `apps/web` — инфраструктура
+
 - [x] shadcn-компоненты: `dropdown-menu`, `badge`, `separator`, `skeleton`
 - [x] `shared/lib/format.ts`: `formatMoney` (RUB), `formatDate`
 
 ### 4. Фронтенд — `entities`
+
 - [x] `entities/transaction/api/list-transactions.ts` (`page`/`limit`)
 - [x] `entities/transaction/api/get-summary.ts` (`month`/`year`)
 - [x] `entities/transaction/api/create-transaction.ts` (`POST /transactions`)
@@ -52,27 +57,30 @@
 - [x] Публичный API `entities/transaction/index.ts`, `entities/category/index.ts`
 
 ### 5. Фронтенд — `features`
+
 - [x] `features/app-header` — меню (Главная/Транзакции/Категории), активный пункт через `usePathname`, профиль с именем и выходом
 - [x] `features/transactions-summary` — карточки «Доходы», «Расходы», «Баланс» за текущий месяц
 - [x] `features/transactions-list` — список по 10, скелетоны, пустое состояние, пагинация «Назад/Вперёд»
 - [x] `features/transaction-create` — зелёная кнопка «Создать» (справа от заголовка «Главная»), модалка с формой (тип/сумма/категория/дата/описание), после создания обновляет список и сводку
 - [x] Code review (уровень `high`) — исправлены все подтверждённые замечания:
-  - [x] Локальная дата по умолчанию вместо UTC (`shared/lib/date.ts` + `todayInputDate`)
-  - [x] Сброс формы и ошибки при закрытии диалога
-  - [x] `refetch` вместо перемонтирования через `key` (без мерцания скелетонов)
-  - [x] Фиксированный период сводки при монтировании
-  - [x] Подрезка `page` при уменьшении числа страниц
-  - [x] Ленивая загрузка категорий при открытии диалога
-  - [x] Блокировка submit при отсутствии категорий
-  - [x] `trailing newline` в новых файлах
+    - [x] Локальная дата по умолчанию вместо UTC (`shared/lib/date.ts` + `todayInputDate`)
+    - [x] Сброс формы и ошибки при закрытии диалога
+    - [x] `refetch` вместо перемонтирования через `key` (без мерцания скелетонов)
+    - [x] Фиксированный период сводки при монтировании
+    - [x] Подрезка `page` при уменьшении числа страниц
+    - [x] Ленивая загрузка категорий при открытии диалога
+    - [x] Блокировка submit при отсутствии категорий
+    - [x] `trailing newline` в новых файлах
 
 ### 6. Фронтенд — `views` и `app`
+
 - [x] `views/dashboard` переписан: заголовок + кнопка «Создать», сводка + последние транзакции
 - [x] `views/transactions`, `views/categories` — заглушки
 - [x] `app/(protected)/layout.tsx` — общая шапка + контент `max-w-5xl`
 - [x] Роуты `/transactions`, `/categories`; `metadata` дашборда → «Главная»
 
 ### 7. Проверка
+
 - [x] `npm run typecheck` — 3/3 воркспейса
 - [x] `npm run lint` — 3/3 воркспейса
 - [x] `npm run build` — успешно, роуты собраны
@@ -83,6 +91,7 @@
 - [ ] Визуальная проверка в браузере (в окружении нет браузера/playwright)
 
 ### 8. Документация и коммит
+
 - [x] `CLAUDE.md`: контракт пагинации, новые слайсы, `Paginated<T>`
 - [x] `.turbo/` добавлен в `.gitignore`
 - [x] Коммиты в ветку `feat/main-screen-frontend` (`7fc12d8`, `a3927e1`, `68de511`)

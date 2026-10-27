@@ -12,18 +12,18 @@ import type { JwtPayload } from '../interfaces/jwt-payload.interface';
  */
 @Injectable()
 export class TokenService {
-  constructor(private readonly jwtService: JwtService) {}
+	constructor(private readonly jwtService: JwtService) {}
 
-  /**
-   * Подписывает JWT-токен из полезной нагрузки.
-   *
-   * @param payload Полезная нагрузка (`JwtPayload`: `{ sub, email, name? }`).
-   *
-   * @returns Строку JWT-токена.
-   *
-   * @throws Ошибку от `JwtService` при некорректном payload.
-   */
-  sign(payload: JwtPayload): Promise<string> {
-    return this.jwtService.signAsync(payload);
-  }
+	/**
+	 * Подписывает JWT-токен из полезной нагрузки.
+	 *
+	 * @param payload Полезная нагрузка (`JwtPayload`: `{ sub, email, name? }`).
+	 *
+	 * @returns Строку JWT-токена.
+	 *
+	 * @throws Ошибку от `JwtService` при некорректном payload.
+	 */
+	sign(payload: JwtPayload): Promise<string> {
+		return this.jwtService.signAsync(payload);
+	}
 }

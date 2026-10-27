@@ -11,21 +11,21 @@ import { GetExpensesQuery } from '../get-expenses.query';
  */
 @QueryHandler(GetExpensesQuery)
 export class GetExpensesHandler implements IQueryHandler<GetExpensesQuery, ExpenseWithCategory[]> {
-  constructor(private readonly prisma: PrismaService) {}
+	constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Выполняет получение списка расходов.
-   *
-   * @param query Запрос (`GetExpensesQuery`) с `userId`.
-   *
-   * @returns Массив `ExpenseWithCategory[]`, отсортированный по `date` desc,
-   *          категория вложена.
-   */
-  execute(query: GetExpensesQuery): Promise<ExpenseWithCategory[]> {
-    return this.prisma.expense.findMany({
-      where: { userId: query.userId },
-      orderBy: { date: 'desc' },
-      include: { category: true },
-    });
-  }
+	/**
+	 * Выполняет получение списка расходов.
+	 *
+	 * @param query Запрос (`GetExpensesQuery`) с `userId`.
+	 *
+	 * @returns Массив `ExpenseWithCategory[]`, отсортированный по `date` desc,
+	 *          категория вложена.
+	 */
+	execute(query: GetExpensesQuery): Promise<ExpenseWithCategory[]> {
+		return this.prisma.expense.findMany({
+			where: { userId: query.userId },
+			orderBy: { date: 'desc' },
+			include: { category: true },
+		});
+	}
 }
